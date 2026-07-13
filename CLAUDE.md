@@ -30,14 +30,17 @@ VisualStudio/
 └── libneko/     ← cloned by build script, pinned by commit
 ```
 
-- `buildScript/lib/core/get_source.sh` clones `starifly/sing-box` and
-  `starifly/libneko` into `../` (the parent dir) and checks out pinned commits.
+- `buildScript/lib/core/get_source.sh` clones `qr243vbi/sing-box` (the AWG/Mieru
+  desktop-lineage fork this project targets) and `starifly/libneko` into `../`
+  (the parent dir) and checks out pinned commits.
 - Pinned commits live in `buildScript/lib/core/get_source_env.sh`
   (`COMMIT_SING_BOX`, `COMMIT_LIBNEKO`).
 - `libcore/go.mod` `replace`s point at those siblings:
   `github.com/sagernet/sing-box => ../../sing-box`,
-  `github.com/matsuridayo/libneko => ../../libneko`,
-  plus `sing-vmess => github.com/starifly/sing-vmess`.
+  `github.com/matsuridayo/libneko => ../../libneko`. Because Go ignores a
+  dependency's own `replace` directives, `libcore/go.mod` must also mirror the
+  replaces `qr243vbi/sing-box` relies on: `sing-vmess => starifly/sing-vmess`,
+  `gvisor => nintendobox/gvisor`, `sing-tun => qr243vbi/sing-tun`.
 
 `.gitignore` rules keep build output out of git: `libcore/.gitignore` ignores
 `*.aar`, `binary*.go`, `.build`, `env_*.sh`; `app/libs/libcore.aar` is a build
