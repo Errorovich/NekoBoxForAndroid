@@ -88,7 +88,8 @@ func nekoboxAndroidOutboundRegistry() *outbound.Registry {
 	hysteria2.RegisterOutbound(registry)
 	juicity.RegisterOutbound(registry)
 
-	wireguard.RegisterOutbound(registry)
+	// wireguard is registered as an endpoint only in this sing-box lineage
+	// (see nekoboxAndroidEndpointRegistry); the outbound registration was removed upstream.
 
 	return registry
 }
