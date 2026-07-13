@@ -2268,6 +2268,10 @@ public class SingBoxOptions {
 
         public Integer mtu;
 
+        // sing-box 1.12+: unified address field (replaces inet4_address/inet6_address)
+        // Generate note: Listable
+        public List<String> address;
+
         // Generate note: Listable
         public List<String> inet4_address;
 
@@ -2769,6 +2773,10 @@ public class SingBoxOptions {
         public String interface_name;
 
         public Integer mtu;
+
+        // sing-box 1.12+: unified address field (replaces inet4_address/inet6_address)
+        // Generate note: Listable
+        public List<String> address;
 
         // Generate note: Listable
         public List<String> inet4_address;
@@ -4419,6 +4427,9 @@ public class SingBoxOptions {
         public String action;
 
         public String outbound;
+
+        // action "resolve": domain strategy (migrated from legacy inbound domain_strategy)
+        public String strategy;
 
     }
 

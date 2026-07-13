@@ -264,24 +264,17 @@ fun buildConfig(
                 }
                 endpoint_independent_nat = true
                 mtu = DataStore.mtu
-                domain_strategy = genDomainStrategy(DataStore.resolveDestination)
                 auto_route = true
                 strict_route = DataStore.strictRoute
-                sniff = needSniff
-                sniff_override_destination = needSniffOverride
-                when (ipv6Mode) {
-                    IPv6Mode.DISABLE -> {
-                        inet4_address = listOf(VpnService.PRIVATE_VLAN4_CLIENT + "/28")
-                    }
-
-                    IPv6Mode.ONLY -> {
-                        inet6_address = listOf(VpnService.PRIVATE_VLAN6_CLIENT + "/126")
-                    }
-
-                    else -> {
-                        inet4_address = listOf(VpnService.PRIVATE_VLAN4_CLIENT + "/28")
-                        inet6_address = listOf(VpnService.PRIVATE_VLAN6_CLIENT + "/126")
-                    }
+                // sniff / domain_strategy migrated to route rule actions (sing-box 1.13)
+                // sing-box 1.12+: unified `address` (legacy inet4_address/inet6_address removed in 1.12)
+                address = when (ipv6Mode) {
+                    IPv6Mode.DISABLE -> listOf(VpnService.PRIVATE_VLAN4_CLIENT + "/28")
+                    IPv6Mode.ONLY -> listOf(VpnService.PRIVATE_VLAN6_CLIENT + "/126")
+                    else -> listOf(
+                        VpnService.PRIVATE_VLAN4_CLIENT + "/28",
+                        VpnService.PRIVATE_VLAN6_CLIENT + "/126"
+                    )
                 }
             })
             inbounds.add(Inbound_MixedOptions().apply {
@@ -289,9 +282,7 @@ fun buildConfig(
                 tag = TAG_MIXED
                 listen = bind
                 listen_port = DataStore.mixedPort
-                domain_strategy = genDomainStrategy(DataStore.resolveDestination)
-                sniff = needSniff
-                sniff_override_destination = needSniffOverride
+                // sniff / domain_strategy migrated to route rule actions (sing-box 1.13)
                 if (DataStore.mixedInboundNeedsAuth) {
                     users = listOf(User().also { u ->
                         u.username = Key.MIXED_USERNAME
@@ -309,9 +300,7 @@ fun buildConfig(
             override_android_vpn = true
             rules = mutableListOf()
             rule_set = mutableListOf()
-
-            // 添加并发拨号设置
-             concurrent_dial = DataStore.concurrentDial
+            // concurrent_dial removed: not present in sing-box 1.13 route options
         }
 
         // returns outbound tag
@@ -938,6 +927,15 @@ fun buildConfig(
         if (forTest) {
             dns.rules = listOf()
         } else {
+            // resolve destination domain -> IP (migrated from legacy inbound domain_strategy).
+            // Inserted before the main routing rules so IP-based rules can match.
+            val resolveStrategy = genDomainStrategy(DataStore.resolveDestination)
+            if (resolveStrategy.isNotBlank()) {
+                route.rules.add(0, Rule_DefaultOptions().apply {
+                    action = "resolve"
+                    strategy = resolveStrategy
+                })
+            }
             // built-in DNS rules
             route.rules.add(0, Rule_DefaultOptions().apply {
                 protocol = listOf("dns")
@@ -947,6 +945,12 @@ fun buildConfig(
                 port = listOf(53)
                 action = "hijack-dns"
             })
+            // sniff protocol/domain first of all (migrated from legacy inbound sniff)
+            if (needSniff) {
+                route.rules.add(0, Rule_DefaultOptions().apply {
+                    action = "sniff"
+                })
+            }
             if (DataStore.bypassLanInCore) {
                 route.rules.add(Rule_DefaultOptions().apply {
                     outbound = TAG_BYPASS
