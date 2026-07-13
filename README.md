@@ -5,32 +5,28 @@
 [![License: GPL-3.0](https://img.shields.io/badge/license-GPL--3.0-orange.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![Contributors](https://img.shields.io/github/contributors/Errorovich/NekoBoxForAndroid)](https://github.com/Errorovich/NekoBoxForAndroid/graphs/contributors)
 
-## 免责声明
+## Disclaimer
 
-> 免责声明：本项目仅用于技术研究与代码学习之目的，不提供任何形式的网络代理服务。请勿将本项目用于违反当地法律法规的任何活动。请勿在生产环境中使用本项目，使用者应自行承担使用本项目可能带来的全部风险。若您下载或引用本项目，请在 24 小时内自行删除相关内容，并避免长期存储、分享或传播本项目的任何部分。**作者保留随时修改、更新或移除本项目及其内容的权利，恕不另行通知。**
-> 
-> Disclaimer: This project is intended solely for technical research and code learning purposes and does not provide any form of network proxy service. Please do not use this project for any activities that violate local laws and regulations. Do not use this project in production environments. Users are fully responsible for any risks that may arise from using this project. If you download or reference this project, please delete all related content within 24 hours and avoid long-term storage, distribution, or dissemination of any part of this project. **The author reserves the right to modify, update, or remove any part of this project or its contents at any time without prior notice.**
+> This project is intended solely for technical research and code learning purposes and does not provide any form of network proxy service. Please do not use this project for any activities that violate local laws and regulations. Do not use this project in production environments. Users are fully responsible for any risks that may arise from using this project. If you download or reference this project, please delete all related content within 24 hours and avoid long-term storage, distribution, or dissemination of any part of this project. **The author reserves the right to modify, update, or remove any part of this project or its contents at any time without prior notice.**
 
-## 下载 / Downloads
+## Downloads
 
 [![GitHub All Releases](https://img.shields.io/github/downloads/Errorovich/NekoBoxForAndroid/total?label=downloads-total&logo=github&style=flat-square)](https://github.com/Errorovich/NekoBoxForAndroid/releases)
 
-[GitHub Releases 下载](https://github.com/Errorovich/NekoBoxForAndroid/releases)
-
-**Google Play 版本自 2024 年 5 月起已被第三方控制，为非开源版本，请不要下载。**
+[GitHub Releases](https://github.com/Errorovich/NekoBoxForAndroid/releases)
 
 **The Google Play version has been controlled by a third party since May 2024 and is a non-open
 source version. Please do not download it.**
 
-## 更新日志 & Telegram 发布频道 / Changelog & Telegram Channel
+## Changelog & Telegram Channel
 
 https://t.me/Matsuridayo
 
-## 项目主页 & 文档 / Homepage & Documents
+## Homepage & Documents
 
 https://matsuridayo.github.io
 
-## 支持的代理协议 / Supported Proxy Protocols
+## Supported Proxy Protocols
 
 * SOCKS (4/4a/5)
 * HTTP(S)
@@ -51,7 +47,7 @@ https://matsuridayo.github.io
 * Mieru (mieru-plugin)
 
 <details>
-<summary>XHTTP Extra TLS配置示例</summary>
+<summary>XHTTP Extra TLS configuration example</summary>
 
 <pre><code class="language-json">
 {
@@ -126,7 +122,7 @@ https://matsuridayo.github.io
 </details>
 
 <details>
-<summary>XHTTP Extra Reality配置示例</summary>
+<summary>XHTTP Extra Reality configuration example</summary>
 
 <pre><code class="language-json">
 {
@@ -204,31 +200,21 @@ https://matsuridayo.github.io
 </code></pre>
 </details>
 
-请到[这里](https://matsuridayo.github.io/nb4a-plugin/)下载插件以获得完整的代理支持.
-
 Please visit [here](https://matsuridayo.github.io/nb4a-plugin/) to download plugins for full proxy
-supports.
+support.
 
-## 支持的订阅格式 / Supported Subscription Format
-
-* 一些广泛使用的格式 (如 Shadowsocks, ClashMeta 和 v2rayN)
-* sing-box 出站
-
-仅支持解析出站，即节点。分流规则等信息会被忽略。
+## Supported Subscription Format
 
 * Some widely used formats (like Shadowsocks, ClashMeta and v2rayN)
 * sing-box outbound
 
 Only resolving outbound, i.e. nodes, is supported. Information such as diversion rules are ignored.
 
-## 捐助 / Donate
+## Donate
 
 <details>
 
-如果这个项目对您有帮助, 可以通过捐赠的方式帮助我们维持这个项目.
-
-捐赠满等额 50 USD 可以在「[捐赠榜](https://mtrdnt.pages.dev/donation_list)」显示头像, 如果您未被添加到这里,
-欢迎联系我们补充.
+If this project is helpful to you, you can support us with a donation to help keep it maintained.
 
 Donations of 50 USD or more can display your avatar on
 the [Donation List](https://mtrdnt.pages.dev/donation_list). If you are not added here, please
@@ -244,7 +230,7 @@ USDT TRC20
 
 Core:
 
-- [SagerNet/sing-box](https://github.com/SagerNet/sing-box)
+- [qr243vbi/sing-box](https://github.com/qr243vbi/sing-box) (based on [SagerNet/sing-box](https://github.com/SagerNet/sing-box))
 
 Android GUI:
 
