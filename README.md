@@ -1,9 +1,9 @@
 # NekoBox for Android
 
 [![API](https://img.shields.io/badge/API-21%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=21)
-[![Releases](https://img.shields.io/github/v/release/MatsuriDayo/NekoBoxForAndroid)](https://github.com/MatsuriDayo/NekoBoxForAndroid/releases)
+[![Releases](https://img.shields.io/github/v/release/Errorovich/NekoBoxForAndroid)](https://github.com/Errorovich/NekoBoxForAndroid/releases)
 [![License: GPL-3.0](https://img.shields.io/badge/license-GPL--3.0-orange.svg)](https://www.gnu.org/licenses/gpl-3.0)
-[![Contributors](https://img.shields.io/github/contributors/starifly/NekoBoxForAndroid)](https://github.com/starifly/NekoBoxForAndroid/graphs/contributors)
+[![Contributors](https://img.shields.io/github/contributors/Errorovich/NekoBoxForAndroid)](https://github.com/Errorovich/NekoBoxForAndroid/graphs/contributors)
 
 ## 免责声明
 
@@ -13,9 +13,9 @@
 
 ## 下载 / Downloads
 
-[![GitHub All Releases](https://img.shields.io/github/downloads/Matsuridayo/NekoBoxForAndroid/total?label=downloads-total&logo=github&style=flat-square)](https://github.com/starifly/NekoBoxForAndroid/releases)
+[![GitHub All Releases](https://img.shields.io/github/downloads/Errorovich/NekoBoxForAndroid/total?label=downloads-total&logo=github&style=flat-square)](https://github.com/Errorovich/NekoBoxForAndroid/releases)
 
-[GitHub Releases 下载](https://github.com/starifly/NekoBoxForAndroid/releases)
+[GitHub Releases 下载](https://github.com/Errorovich/NekoBoxForAndroid/releases)
 
 **Google Play 版本自 2024 年 5 月起已被第三方控制，为非开源版本，请不要下载。**
 
@@ -258,4 +258,4 @@ Web Dashboard:
 
 ## Contributors
 
-![Contributors](https://contrib.rocks/image?repo=starifly/NekoBoxForAndroid)
+![Contributors](https://contrib.rocks/image?repo=Errorovich/NekoBoxForAndroid)

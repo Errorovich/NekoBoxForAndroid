@@ -5,9 +5,9 @@ Guidance for working in this repository.
 ## What this is
 
 **NekoBox for Android (NB4A)** — Android GUI client for the `sing-box` universal
-proxy core. This fork lives at `github.com/starifly/NekoBoxForAndroid`
-(upstream: `github.com/MatsuriDayo/NekoBoxForAndroid`). Package `com.nb4a`,
-license GPL-3.0.
+proxy core. This fork lives at `github.com/Errorovich/NekoBoxForAndroid`
+(direct upstream: `github.com/starifly/NekoBoxForAndroid`, itself a fork of
+`github.com/MatsuriDayo/NekoBoxForAndroid`). Package `com.nb4a`, license GPL-3.0.
 
 Two layers:
 - **`app/`** — Android app, Kotlin, package roots `io.nekohasekai.sagernet.*`
