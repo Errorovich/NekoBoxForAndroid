@@ -868,8 +868,6 @@ public class SingBoxOptions {
 
         // Generate note: option type:  public ShadowTLSOutboundOptions ShadowTLSOptions;
 
-        // Generate note: option type:  public ShadowsocksROutboundOptions ShadowsocksROptions;
-
         // Generate note: option type:  public VLESSOutboundOptions VLESSOptions;
 
         // Generate note: option type:  public TUICOutboundOptions TUICOptions;
@@ -1396,62 +1394,6 @@ public class SingBoxOptions {
         public UDPOverTCPOptions udp_over_tcp;
 
         public MultiplexOptions multiplex;
-
-    }
-
-    public static class ShadowsocksROutboundOptions extends SingBoxOption {
-
-        // Generate note: nested type DialerOptions
-        public String detour;
-
-        public String bind_interface;
-
-        public String inet4_bind_address;
-
-        public String inet6_bind_address;
-
-        public String protect_path;
-
-        public Integer routing_mark;
-
-        public Boolean reuse_addr;
-
-        public Long connect_timeout;
-
-        public Boolean tcp_fast_open;
-
-        public Boolean tcp_multi_path;
-
-        public Boolean udp_fragment;
-
-        // Generate note: option type:  public Boolean UDPFragmentDefault;
-
-        public String domain_strategy;
-
-        public Long fallback_delay;
-
-        // End of public DialerOptions ;
-
-        // Generate note: nested type ServerOptions
-        public String server;
-
-        public Integer server_port;
-
-        // End of public ServerOptions ;
-
-        public String method;
-
-        public String password;
-
-        public String obfs;
-
-        public String obfs_param;
-
-        public String protocol;
-
-        public String protocol_param;
-
-        public String network;
 
     }
 
@@ -4156,61 +4098,6 @@ public class SingBoxOptions {
         public String password;
 
         public OutboundTLSOptions tls;
-
-    }
-
-    public static class Outbound_ShadowsocksROptions extends Outbound {
-
-        // Generate note: nested type DialerOptions
-        public String detour;
-
-        public String bind_interface;
-
-        public String inet4_bind_address;
-
-        public String inet6_bind_address;
-
-        public String protect_path;
-
-        public Integer routing_mark;
-
-        public Boolean reuse_addr;
-
-        public Long connect_timeout;
-
-        public Boolean tcp_fast_open;
-
-        public Boolean tcp_multi_path;
-
-        public Boolean udp_fragment;
-
-
-        public String domain_strategy;
-
-        public Long fallback_delay;
-
-        // End of public DialerOptions ;
-
-        // Generate note: nested type ServerOptions
-        public String server;
-
-        public Integer server_port;
-
-        // End of public ServerOptions ;
-
-        public String method;
-
-        public String password;
-
-        public String obfs;
-
-        public String obfs_param;
-
-        public String protocol;
-
-        public String protocol_param;
-
-        public String network;
 
     }
 

@@ -123,7 +123,6 @@
 
                 <data android:scheme="sn" />
                 <data android:scheme="ss" />
-                <data android:scheme="ssr" />
                 <data android:scheme="socks" />
                 <data android:scheme="socks4" />
                 <data android:scheme="socksa" />
@@ -156,9 +155,6 @@
             android:configChanges="uiMode" />
         <activity
             android:name="io.nekohasekai.sagernet.ui.profile.ShadowsocksSettingsActivity"
-            android:configChanges="uiMode" />
-        <activity
-            android:name="io.nekohasekai.sagernet.ui.profile.ShadowsocksRSettingsActivity"
             android:configChanges="uiMode" />
         <activity
             android:name="io.nekohasekai.sagernet.ui.profile.VMessSettingsActivity"

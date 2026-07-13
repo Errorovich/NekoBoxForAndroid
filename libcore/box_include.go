@@ -27,7 +27,6 @@ import (
 	"github.com/sagernet/sing-box/protocol/mixed"
 	"github.com/sagernet/sing-box/protocol/redirect"
 	"github.com/sagernet/sing-box/protocol/shadowsocks"
-	"github.com/sagernet/sing-box/protocol/shadowsocksr"
 	"github.com/sagernet/sing-box/protocol/shadowtls"
 	snellprotocol "github.com/sagernet/sing-box/protocol/snell"
 	"github.com/sagernet/sing-box/protocol/socks"
@@ -75,7 +74,6 @@ func nekoboxAndroidOutboundRegistry() *outbound.Registry {
 	socks.RegisterOutbound(registry)
 	http.RegisterOutbound(registry)
 	shadowsocks.RegisterOutbound(registry)
-	shadowsocksr.RegisterOutbound(registry)
 	vmess.RegisterOutbound(registry)
 	trojan.RegisterOutbound(registry)
 	tor.RegisterOutbound(registry)

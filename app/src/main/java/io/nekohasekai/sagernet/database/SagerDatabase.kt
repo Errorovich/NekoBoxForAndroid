@@ -2,9 +2,11 @@ package io.nekohasekai.sagernet.database
 
 import androidx.room.AutoMigration
 import androidx.room.Database
+import androidx.room.DeleteColumn
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import androidx.room.migration.AutoMigrationSpec
 import dev.matrix.roomigrant.GenerateRoomMigrations
 import io.nekohasekai.sagernet.Key
 import io.nekohasekai.sagernet.SagerNet
@@ -16,18 +18,23 @@ import kotlinx.coroutines.launch
 
 @Database(
     entities = [ProxyGroup::class, ProxyEntity::class, RuleEntity::class],
-    version = 8,
+    version = 9,
     autoMigrations = [
         AutoMigration(from = 3, to = 4),
         AutoMigration(from = 4, to = 5),
         AutoMigration(from = 5, to = 6),
         AutoMigration(from = 6, to = 7),
-        AutoMigration(from = 7, to = 8)
+        AutoMigration(from = 7, to = 8),
+        AutoMigration(from = 8, to = 9, spec = SagerDatabase.Migration8to9::class)
     ]
 )
 @TypeConverters(value = [KryoConverters::class, GsonConverters::class])
 @GenerateRoomMigrations
 abstract class SagerDatabase : RoomDatabase() {
+
+    // Drops the ShadowsocksR (ssrBean) column removed together with SSR support.
+    @DeleteColumn(tableName = "proxy_entities", columnName = "ssrBean")
+    class Migration8to9 : AutoMigrationSpec
 
     companion object {
         @OptIn(DelicateCoroutinesApi::class)

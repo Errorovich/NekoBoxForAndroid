@@ -17,8 +17,6 @@ import io.nekohasekai.sagernet.fmt.naive.NaiveBean
 import io.nekohasekai.sagernet.fmt.naive.buildNaiveConfig
 import io.nekohasekai.sagernet.fmt.naive.toUri
 import io.nekohasekai.sagernet.fmt.shadowsocks.*
-import io.nekohasekai.sagernet.fmt.shadowsocksr.ShadowsocksRBean
-import io.nekohasekai.sagernet.fmt.shadowsocksr.toUri
 import moe.matsuri.nb4a.proxy.shadowtls.ShadowTLSBean
 import io.nekohasekai.sagernet.fmt.snell.SnellBean
 import io.nekohasekai.sagernet.fmt.snell.toUri
@@ -64,7 +62,6 @@ data class ProxyEntity(
     var socksBean: SOCKSBean? = null,
     var httpBean: HttpBean? = null,
     var ssBean: ShadowsocksBean? = null,
-    var ssrBean: ShadowsocksRBean? = null,
     var vmessBean: VMessBean? = null,
     var trojanBean: TrojanBean? = null,
     var trojanGoBean: TrojanGoBean? = null,
@@ -87,7 +84,6 @@ data class ProxyEntity(
         const val TYPE_SOCKS = 0
         const val TYPE_HTTP = 1
         const val TYPE_SS = 2
-        const val TYPE_SSR = 3
         const val TYPE_VMESS = 4
         const val TYPE_TROJAN = 6
 
@@ -176,7 +172,6 @@ data class ProxyEntity(
             TYPE_SOCKS -> socksBean = KryoConverters.socksDeserialize(byteArray)
             TYPE_HTTP -> httpBean = KryoConverters.httpDeserialize(byteArray)
             TYPE_SS -> ssBean = KryoConverters.shadowsocksDeserialize(byteArray)
-            TYPE_SSR -> ssrBean = KryoConverters.shadowsocksrDeserialize(byteArray)
             TYPE_VMESS -> vmessBean = KryoConverters.vmessDeserialize(byteArray)
             TYPE_TROJAN -> trojanBean = KryoConverters.trojanDeserialize(byteArray)
             TYPE_TROJAN_GO -> trojanGoBean = KryoConverters.trojanGoDeserialize(byteArray)
@@ -200,7 +195,6 @@ data class ProxyEntity(
         TYPE_SOCKS -> socksBean!!.protocolName()
         TYPE_HTTP -> if (httpBean!!.isTLS()) "HTTPS" else "HTTP"
         TYPE_SS -> "Shadowsocks"
-        TYPE_SSR -> "ShadowsocksR"
         TYPE_VMESS -> if (vmessBean!!.isVLESS) "VLESS" else "VMess"
         TYPE_TROJAN -> "Trojan"
         TYPE_TROJAN_GO -> "Trojan-Go"
@@ -228,7 +222,6 @@ data class ProxyEntity(
             TYPE_SOCKS -> socksBean
             TYPE_HTTP -> httpBean
             TYPE_SS -> ssBean
-            TYPE_SSR -> ssrBean
             TYPE_VMESS -> vmessBean
             TYPE_TROJAN -> trojanBean
             TYPE_TROJAN_GO -> trojanGoBean
@@ -272,7 +265,6 @@ data class ProxyEntity(
             is SOCKSBean -> toUri()
             is HttpBean -> toUri()
             is ShadowsocksBean -> toUri()
-            is ShadowsocksRBean -> toUri()
             is VMessBean -> toUriVMessVLESSTrojan(false)
             is TrojanBean -> toUriVMessVLESSTrojan(true)
             is TrojanGoBean -> toUri()
@@ -421,7 +413,6 @@ data class ProxyEntity(
         socksBean = null
         httpBean = null
         ssBean = null
-        ssrBean = null
         vmessBean = null
         trojanBean = null
         trojanGoBean = null
@@ -452,11 +443,6 @@ data class ProxyEntity(
             is ShadowsocksBean -> {
                 type = TYPE_SS
                 ssBean = bean
-            }
-
-            is ShadowsocksRBean -> {
-                type = TYPE_SSR
-                ssrBean = bean
             }
 
             is VMessBean -> {
@@ -550,7 +536,6 @@ data class ProxyEntity(
                 TYPE_SOCKS -> SocksSettingsActivity::class.java
                 TYPE_HTTP -> HttpSettingsActivity::class.java
                 TYPE_SS -> ShadowsocksSettingsActivity::class.java
-                TYPE_SSR -> ShadowsocksRSettingsActivity::class.java
                 TYPE_VMESS -> VMessSettingsActivity::class.java
                 TYPE_TROJAN -> TrojanSettingsActivity::class.java
                 TYPE_TROJAN_GO -> TrojanGoSettingsActivity::class.java
