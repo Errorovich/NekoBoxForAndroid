@@ -5,15 +5,19 @@ import (
 	"fmt"
 	"libcore/procfs"
 	"log"
+	"net"
 	"net/netip"
 	"strings"
+	"sync"
 	"syscall"
 
 	"github.com/matsuridayo/libneko/neko_log"
 	"github.com/sagernet/sing-box/adapter"
+	C "github.com/sagernet/sing-box/constant"
 	sblog "github.com/sagernet/sing-box/log"
 	"github.com/sagernet/sing-box/option"
 	tun "github.com/sagernet/sing-tun"
+	"github.com/sagernet/sing/common/control"
 	E "github.com/sagernet/sing/common/exceptions"
 	"github.com/sagernet/sing/common/logger"
 	N "github.com/sagernet/sing/common/network"
@@ -21,10 +25,28 @@ import (
 
 var boxPlatformInterfaceInstance adapter.PlatformInterface = &boxPlatformInterfaceWrapper{}
 
-type boxPlatformInterfaceWrapper struct{}
+type boxPlatformInterfaceWrapper struct {
+	networkManager adapter.NetworkManager
+	access         sync.Mutex
+	defaultIndex   int
+	monitor        *platformInterfaceMonitor
+}
 
 func (w *boxPlatformInterfaceWrapper) Initialize(networkManager adapter.NetworkManager) error {
+	w.networkManager = networkManager
 	return nil
+}
+
+func (w *boxPlatformInterfaceWrapper) setDefaultIndex(index int) {
+	w.access.Lock()
+	w.defaultIndex = index
+	w.access.Unlock()
+}
+
+func (w *boxPlatformInterfaceWrapper) getDefaultIndex() int {
+	w.access.Lock()
+	defer w.access.Unlock()
+	return w.defaultIndex
 }
 
 func (w *boxPlatformInterfaceWrapper) UsePlatformAutoDetectInterfaceControl() bool {
@@ -73,15 +95,60 @@ func (w *boxPlatformInterfaceWrapper) UsePlatformDefaultInterfaceMonitor() bool 
 }
 
 func (w *boxPlatformInterfaceWrapper) CreateDefaultInterfaceMonitor(l logger.Logger) tun.DefaultInterfaceMonitor {
-	return &interfaceMonitorStub{}
+	m := &platformInterfaceMonitor{wrapper: w, logger: l}
+	w.monitor = m
+	return m
 }
 
 func (w *boxPlatformInterfaceWrapper) UsePlatformNetworkInterfaces() bool {
-	return false
+	// Go's net.Interfaces() is blocked on Android 11+, so the dialer's
+	// interface enumeration comes from the platform (ConnectivityManager).
+	return true
 }
 
 func (w *boxPlatformInterfaceWrapper) NetworkInterfaces() ([]adapter.NetworkInterface, error) {
-	return nil, nil
+	raw, err := intfBox.GetInterfaces()
+	if err != nil {
+		return nil, err
+	}
+	var list []struct {
+		Name      string   `json:"name"`
+		Index     int      `json:"index"`
+		MTU       int      `json:"mtu"`
+		Addresses []string `json:"addresses"`
+		Type      int      `json:"type"`
+		Metered   bool     `json:"metered"`
+		Default   bool     `json:"default"`
+	}
+	if err := json.Unmarshal([]byte(raw), &list); err != nil {
+		return nil, err
+	}
+	interfaces := make([]adapter.NetworkInterface, 0, len(list))
+	defaultIndex := 0
+	for _, it := range list {
+		var prefixes []netip.Prefix
+		for _, a := range it.Addresses {
+			if p, e := netip.ParsePrefix(a); e == nil {
+				prefixes = append(prefixes, p)
+			}
+		}
+		if it.Default {
+			defaultIndex = it.Index
+		}
+		interfaces = append(interfaces, adapter.NetworkInterface{
+			Interface: control.Interface{
+				Index:     it.Index,
+				MTU:       it.MTU,
+				Name:      it.Name,
+				Addresses: prefixes,
+				Flags:     net.FlagUp | net.FlagRunning,
+			},
+			Type:      C.InterfaceType(it.Type),
+			Expensive: it.Metered,
+		})
+	}
+	w.setDefaultIndex(defaultIndex)
+	return interfaces, nil
 }
 
 func (w *boxPlatformInterfaceWrapper) UnderNetworkExtension() bool {

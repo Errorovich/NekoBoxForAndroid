@@ -2,11 +2,15 @@ package moe.matsuri.nb4a
 
 import android.content.Context
 import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.net.wifi.WifiManager
 import android.os.Build
 import android.os.Build.VERSION_CODES
 import androidx.annotation.RequiresApi
 import io.nekohasekai.sagernet.SagerNet
+import org.json.JSONArray
+import org.json.JSONObject
+import java.net.NetworkInterface
 import io.nekohasekai.sagernet.bg.ServiceNotification
 import io.nekohasekai.sagernet.database.DataStore
 import io.nekohasekai.sagernet.database.SagerDatabase
@@ -73,6 +77,69 @@ class NativeInterface : BoxPlatformInterface, NB4AInterface {
             app.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
         val connectionInfo = wifiManager.connectionInfo
         return "${connectionInfo.ssid},${connectionInfo.bssid}"
+    }
+
+    // Enumerate network interfaces via ConnectivityManager. Go's net.Interfaces()
+    // is blocked on Android 11+, so sing-box 1.12+ relies on the platform for this.
+    override fun getInterfaces(): String {
+        val cm = SagerNet.connectivity
+        val arr = JSONArray()
+        // The underlying (non-VPN) network is what the dialer must bind to as its
+        // default; DefaultNetworkListener tracks it, avoiding our own tun interface.
+        val underlyingName = SagerNet.underlyingNetwork?.let {
+            try { cm.getLinkProperties(it)?.interfaceName } catch (_: Exception) { null }
+        }
+        for (network in cm.allNetworks) {
+            try {
+                val lp = cm.getLinkProperties(network) ?: continue
+                val name = lp.interfaceName ?: continue
+                val caps = cm.getNetworkCapabilities(network)
+                // Skip our own VPN tunnel: it must never be a dial candidate.
+                if (caps != null && caps.hasTransport(NetworkCapabilities.TRANSPORT_VPN)) continue
+                val metered = caps == null ||
+                    !caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_NOT_METERED)
+                val type = when {
+                    caps == null -> 3
+                    caps.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> 0
+                    caps.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> 1
+                    caps.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> 2
+                    else -> 3
+                }
+                var index = 0
+                var mtu = 0
+                try {
+                    val ni = NetworkInterface.getByName(name)
+                    if (ni != null) {
+                        index = ni.index
+                        mtu = ni.mtu
+                    }
+                } catch (_: Exception) {
+                }
+                if (index == 0 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    try {
+                        index = android.system.Os.if_nametoindex(name)
+                    } catch (_: Exception) {
+                    }
+                }
+                if (index == 0) continue
+                val addresses = JSONArray()
+                for (la in lp.linkAddresses) {
+                    val host = la.address.hostAddress ?: continue
+                    addresses.put("$host/${la.prefixLength}")
+                }
+                arr.put(JSONObject().apply {
+                    put("name", name)
+                    put("index", index)
+                    put("mtu", if (mtu > 0) mtu else 1500)
+                    put("addresses", addresses)
+                    put("type", type)
+                    put("metered", metered)
+                    put("default", underlyingName != null && name == underlyingName)
+                })
+            } catch (_: Exception) {
+            }
+        }
+        return arr.toString()
     }
 
     // nb4a interface
