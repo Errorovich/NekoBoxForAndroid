@@ -75,6 +75,19 @@ type BoxInstance struct {
 }
 
 func NewSingBoxInstance(config string, localTransport LocalDNSTransport) (b *BoxInstance, err error) {
+	return newSingBoxInstance(config, localTransport, false)
+}
+
+// NewSingBoxInstanceForTest builds an ephemeral instance for URL testing. It
+// uses no platform log writer, which keeps sing-box from creating the shared
+// bbolt cache file (cache.db): a group URL test spawns many instances
+// concurrently, and sharing one cache.db corrupts its freelist
+// ("panic: page N already freed").
+func NewSingBoxInstanceForTest(config string, localTransport LocalDNSTransport) (b *BoxInstance, err error) {
+	return newSingBoxInstance(config, localTransport, true)
+}
+
+func newSingBoxInstance(config string, localTransport LocalDNSTransport, forTest bool) (b *BoxInstance, err error) {
 	defer device.DeferPanicToError("NewSingBoxInstance", func(err_ error) { err = err_ })
 
 	// create box context
@@ -84,21 +97,28 @@ func NewSingBoxInstance(config string, localTransport LocalDNSTransport) (b *Box
 		nekoboxAndroidDNSTransportRegistry(localTransport), nekoboxAndroidServiceRegistry(),
 	)
 	ctx = service.ContextWithDefaultRegistry(ctx)
-	service.MustRegister[adapter.PlatformInterface](ctx, boxPlatformInterfaceInstance)
+	// A fresh platform-interface wrapper per box: it holds per-instance network
+	// state (default interface, network manager), so a shared singleton would
+	// race when several boxes are built concurrently (group URL test).
+	service.MustRegister[adapter.PlatformInterface](ctx, &boxPlatformInterfaceWrapper{})
 
 	// parse options
 	var options option.Options
 	err = options.UnmarshalJSONContext(ctx, []byte(config))
 	if err != nil {
+		cancel()
 		return nil, fmt.Errorf("decode config: %v", err)
 	}
 
 	// create box
-	instance, err := box.New(box.Options{
-		Options:           options,
-		Context:           ctx,
-		PlatformLogWriter: boxPlatformLogWriter,
-	})
+	boxOptions := box.Options{
+		Options: options,
+		Context: ctx,
+	}
+	if !forTest {
+		boxOptions.PlatformLogWriter = boxPlatformLogWriter
+	}
+	instance, err := box.New(boxOptions)
 	if err != nil {
 		cancel()
 		return nil, fmt.Errorf("create service: %v", err)

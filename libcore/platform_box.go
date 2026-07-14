@@ -23,8 +23,6 @@ import (
 	N "github.com/sagernet/sing/common/network"
 )
 
-var boxPlatformInterfaceInstance adapter.PlatformInterface = &boxPlatformInterfaceWrapper{}
-
 type boxPlatformInterfaceWrapper struct {
 	networkManager adapter.NetworkManager
 	access         sync.Mutex

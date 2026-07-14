@@ -47,7 +47,9 @@ class TestInstance(profile: ProxyEntity, val link: String, private val timeout: 
     override suspend fun loadConfig() {
         // don't call destroyAllJsi here
         if (BuildConfig.DEBUG) Logs.d(config.config)
-        box = Libcore.newSingBoxInstance(config.config, LocalResolverImpl)
+        // dedicated test constructor: no cache file, so concurrent group URL
+        // tests don't fight over a shared bbolt cache.db (page-already-freed).
+        box = Libcore.newSingBoxInstanceForTest(config.config, LocalResolverImpl)
     }
 
 }
