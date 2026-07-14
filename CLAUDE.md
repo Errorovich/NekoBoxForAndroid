@@ -12,7 +12,7 @@ proxy core. This fork lives at `github.com/Errorovich/NekoBoxForAndroid`
 Two layers:
 - **`app/`** — Android app, Kotlin, package roots `io.nekohasekai.sagernet.*`
   and `moe.matsuri.nb4a.*`. Min SDK 21. Consumes the core as a prebuilt AAR.
-- **`libcore/`** — Go module (`module libcore`, Go 1.24). A gomobile wrapper
+- **`libcore/`** — Go module (`module libcore`, Go 1.25). A gomobile wrapper
   around `sing-box` + `libneko`. Compiled to `libcore.aar` and dropped into
   `app/libs/`.
 
@@ -48,10 +48,9 @@ artifact.
 
 ## Build pipeline
 
-Driver: `./run <path-under-buildScript>` executes the matching `*.sh`.
-Everything sources `buildScript/init/env.sh` (needs `ANDROID_NDK_HOME`, Go,
-gomobile). Build is Unix/bash + NDK — Windows host builds the core via WSL/CI,
-not natively.
+Driver (Unix/bash/CI path): `./run <path-under-buildScript>` executes the
+matching `*.sh`. Everything sources `buildScript/init/env.sh` (needs
+`ANDROID_NDK_HOME`, Go, gomobile).
 
 Order:
 1. `./run lib/core` → `init.sh` then `build.sh`:
@@ -68,6 +67,47 @@ Order:
    `app/libs/*.aar` via `implementation(fileTree("libs"))`.
 
 Version metadata: `nb4a.properties` (`VERSION_NAME`, `VERSION_CODE`, etc.).
+
+### Native Windows build (no WSL required)
+
+Confirmed working: both `libcore.aar` and the APK build natively on Windows —
+`gomobile-matsuri` is Windows-aware (`env.go` in the MatsuriDayo fork branches
+on `runtime.GOOS == "windows"` and resolves the NDK's `.cmd` clang wrappers via
+`archNDK()`/`PATHEXT`). WSL is only ever needed as a source of pre-fetched
+sibling repos/toolchain if you don't want to install things twice — it is not
+required by the toolchain itself.
+
+Prerequisites on the Windows host: JDK 17, Android SDK + NDK (any r19c+; the
+project pins `25.0.8775105` in `buildScript/init/env_ndk.sh`, but a newer NDK
+such as r28 also works — it just produces somewhat larger native libraries due
+to newer default hardening flags), Go 1.25+, git.
+
+Steps (PowerShell), assuming this repo is at `<repo>`:
+1. **Sibling sources** — clone/copy `sing-box` (`qr243vbi/sing-box`) and
+   `libneko` (`starifly/libneko`) into `<repo>\..\sing-box` and
+   `<repo>\..\libneko`, checked out at the commits pinned in
+   `buildScript/lib/core/get_source_env.sh`.
+2. **gomobile-matsuri**: clone `MatsuriDayo/gomobile` (branch `master2`),
+   `go install ./cmd/gomobile ./cmd/gobind` from inside it, then rename the
+   resulting `%GOPATH%\bin\gomobile.exe` / `gobind.exe` to `gomobile-matsuri.exe`
+   / `gobind-matsuri.exe`. Put `%GOPATH%\bin` on `PATH`.
+3. Set `ANDROID_NDK_HOME` / `ANDROID_HOME` to the Windows SDK paths, `GOBIND=gobind-matsuri`,
+   then run `gomobile-matsuri.exe init`.
+4. Build the core from `libcore/`:
+   ```
+   gomobile-matsuri.exe bind -v -androidapi 21 -cache .build -trimpath -ldflags="-s -w" `
+     -tags="with_conntrack,with_gvisor,with_quic,with_wireguard,with_utls,with_clash_api" .
+   ```
+   Copy the resulting `libcore.aar` to `app\libs\libcore.aar`.
+5. Set `local.properties` at the repo root to `sdk.dir=<path-to-Android-Sdk>`
+   (forward slashes or escaped backslashes). The app module itself needs no
+   `ndk.dir`.
+6. `.\gradlew.bat :app:assembleOssDebug` (or any other variant/task), with
+   `JAVA_HOME` pointed at the JDK 17 install.
+
+The `./run lib/assets` step (geoip/geosite download) shells out to `curl` and
+`xz`; on Windows either run it under WSL/Git Bash, or fetch+`xz -9` the two
+`.db` files manually into `app/src/main/assets/sing-box/`.
 
 ## libcore ↔ app boundary
 

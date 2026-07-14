@@ -202,6 +202,80 @@ support.
 
 Only resolving outbound, i.e. nodes, is supported. Information such as diversion rules are ignored.
 
+## Building from Source
+
+The app is Kotlin/Gradle; the proxy engine (`sing-box`) is a Go module compiled
+to a native Android library (`libcore.aar`) via [gomobile](https://pkg.go.dev/golang.org/x/mobile/cmd/gomobile).
+Its sources are **not** committed in this repo (no git submodules) — they're
+fetched as sibling folders and pinned by commit. Building has two parts:
+compile the core once into `libcore.aar`, then build the APK with Gradle.
+
+### What you need installed
+
+| Tool | Version | Used for |
+|---|---|---|
+| [Git](https://git-scm.com/) | any recent | cloning this repo and the core sources |
+| [JDK](https://adoptium.net/) | 17 | Gradle / Android build |
+| [Android SDK](https://developer.android.com/studio) | API 35 (compile), min API 21 | building the APK |
+| Android NDK | r19c or newer (project pins `25.0.8775105`, a newer one such as r28 works too) | compiling the Go core to native `.so` libraries |
+| [Go](https://go.dev/dl/) | 1.25 or newer | building `libcore.aar` |
+| `curl` + `xz` | any | downloading/compressing the `geoip.db`/`geosite.db` assets |
+
+The Android SDK/NDK and JDK can come from a full Android Studio install, or
+from the SDK command-line tools alone. Building works both on Linux/macOS and
+natively on Windows (no WSL required) — WSL is only convenient if you'd rather
+run the bundled bash scripts as-is.
+
+### 1. Get the sources
+
+```sh
+git clone https://github.com/Errorovich/NekoBoxForAndroid.git
+cd NekoBoxForAndroid
+```
+
+The `sing-box` core and `libneko` are separate git repos that this project
+pins by commit (see `buildScript/lib/core/get_source_env.sh`). On Linux/macOS/
+WSL, fetching them is one command:
+
+```sh
+./run lib/core
+```
+
+This clones `qr243vbi/sing-box` and `starifly/libneko` as siblings of this
+repo (`../sing-box`, `../libneko`), checks out the pinned commits, installs the
+`gomobile-matsuri` toolchain, and compiles `libcore.aar` into `app/libs/`.
+
+On native Windows, do the same steps manually (clone the two repos next to
+this one at the pinned commits, install `gomobile-matsuri`/`gobind-matsuri`
+from `MatsuriDayo/gomobile` branch `master2`, then run `gomobile-matsuri bind`
+from `libcore/`) — see `CLAUDE.md`'s "Native Windows build" section for the
+exact commands.
+
+### 2. Fetch the routing assets
+
+```sh
+./run lib/assets
+```
+
+Downloads `geoip.db`/`geosite.db` (from `SagerNet/sing-geoip`/`sing-geosite`),
+compresses them with `xz`, and places them in `app/src/main/assets/sing-box/`.
+On Windows without WSL/Git Bash, fetch the two `.db` files from the latest
+releases of those repos and `xz -9` them into that folder yourself.
+
+### 3. Build the APK
+
+```sh
+./gradlew :app:assembleOssDebug     # or assembleOssRelease, on Linux/macOS
+```
+
+```powershell
+.\gradlew.bat :app:assembleOssDebug   # on Windows
+```
+
+The resulting APK lands in `app/build/outputs/apk/oss/debug/` (or
+`.../release/`). `local.properties` (git-ignored) must point `sdk.dir` at your
+Android SDK.
+
 ## Credits
 
 Core:
