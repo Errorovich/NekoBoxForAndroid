@@ -72,6 +72,19 @@ class AboutFragment : ToolbarFragment(R.layout.layout_about) {
         }
 
         override fun getMaterialAboutList(activityContext: Context): MaterialAboutList {
+            // debug-only build id (git commit + WIP hash) appended to the version line;
+            // generated asset, see Helpers.kt. Release builds show version only.
+            val debugBuildId = if (BuildConfig.DEBUG) {
+                try {
+                    activityContext.assets.open("build_id.txt")
+                        .bufferedReader().use { it.readText().trim() }
+                        .takeIf { it.isNotBlank() }
+                } catch (e: Exception) {
+                    null
+                }
+            } else null
+            val versionText = SagerNet.appVersionNameForDisplay +
+                if (debugBuildId != null) " $debugBuildId" else ""
             return MaterialAboutList.Builder()
                 .addCard(
                     MaterialAboutCard.Builder()
@@ -80,7 +93,7 @@ class AboutFragment : ToolbarFragment(R.layout.layout_about) {
                             MaterialAboutActionItem.Builder()
                                 .icon(R.drawable.ic_baseline_update_24)
                                 .text(R.string.app_version)
-                                .subText(SagerNet.appVersionNameForDisplay)
+                                .subText(versionText)
                                 .setOnClickAction {
                                     requireContext().launchCustomTab(
                                         "https://github.com/Errorovich/NekoBoxForAndroid/releases"

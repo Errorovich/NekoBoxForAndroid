@@ -153,6 +153,7 @@ fun Project.setupApp() {
         }
     }
     setupAppCommon()
+    setupDebugBuildId()
 
     android.apply {
         this as AbstractAppExtension
@@ -218,3 +219,52 @@ fun Project.setupApp() {
         }
     }
 }
+
+// Debug-only build identifier derived from git: short commit hash plus a hash of
+// any uncommitted changes (WIP). It is content-addressed, so it is identical on any
+// machine for the same source and differs when the source differs - no stored counter.
+// Emitted as a generated asset on the `debug` source set only, so it never ships in
+// release builds and does not invalidate compilation.
+fun Project.setupDebugBuildId() {
+    val genAssetsDir = layout.buildDirectory.dir("generated/buildId/assets")
+
+    val genTask = tasks.register("generateDebugBuildId") {
+        outputs.dir(genAssetsDir)
+        outputs.upToDateWhen { false } // recompute each build; downstream re-runs only if the id changed
+        doLast {
+            val base = gitOutput("rev-parse", "--short", "HEAD") ?: "nogit"
+            val diff = gitOutput("diff", "HEAD").orEmpty()
+            val id = if (diff.isBlank()) base else "$base+${sha1(diff).take(7)}"
+            val out = genAssetsDir.get().file("build_id.txt").asFile
+            out.parentFile.mkdirs()
+            out.writeText(id)
+        }
+    }
+
+    android.apply {
+        this as AbstractAppExtension
+        sourceSets.getByName("debug").assets.srcDir(genAssetsDir)
+    }
+
+    // Generate before assets are merged, for debug variants only.
+    tasks.matching { it.name.matches(Regex("merge.*DebugAssets")) }.configureEach {
+        dependsOn(genTask)
+    }
+}
+
+private fun Project.gitOutput(vararg args: String): String? = try {
+    val proc = ProcessBuilder(listOf("git") + args)
+        .directory(rootDir)
+        .start()
+    val out = proc.inputStream.bufferedReader().readText().trim()
+    proc.errorStream.readBytes() // drain to avoid blocking on stderr
+    proc.waitFor()
+    if (proc.exitValue() == 0) out else null
+} catch (e: Exception) {
+    null
+}
+
+private fun sha1(input: String): String =
+    java.security.MessageDigest.getInstance("SHA-1")
+        .digest(input.toByteArray())
+        .joinToString("") { "%02x".format(it) }

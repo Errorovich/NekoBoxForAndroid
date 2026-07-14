@@ -210,9 +210,6 @@ class SagerNet : Application(),
             } else if (!isOss) {
                 n += " ${BuildConfig.FLAVOR}"
             }
-            if (BuildConfig.DEBUG) {
-                n += " DEBUG"
-            }
             n
         }()
     }
