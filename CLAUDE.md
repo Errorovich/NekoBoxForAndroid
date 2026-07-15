@@ -95,9 +95,16 @@ Steps (PowerShell), assuming this repo is at `<repo>`:
    then run `gomobile-matsuri.exe init`.
 4. Build the core from `libcore/`:
    ```
-   gomobile-matsuri.exe bind -v -androidapi 21 -cache .build -trimpath -ldflags="-s -w" `
-     -tags="with_conntrack,with_gvisor,with_quic,with_wireguard,with_utls,with_clash_api" .
+   gomobile-matsuri.exe bind -v -androidapi 21 -cache .build -trimpath `
+     -ldflags="-s -w -X github.com/sagernet/sing-box/constant.Version=1.13.14-mod2" `
+     -tags="with_conntrack,with_gvisor,with_quic,with_wireguard,with_utls,with_clash_api,with_naive_outbound,with_awg,with_tailscale" .
    ```
+   The `-X ...constant.Version=` stamps the reported sing-box version (defaults
+   to `unknown` otherwise). The value must match the fork's published tag —
+   `git -C ..\..\sing-box describe --tags --abbrev=0` (currently `v1.13.14-mod2`,
+   stripped of the leading `v`); `libcore/build.sh` derives it automatically.
+   `with_awg`/`with_tailscale` only surface those protocols in `VersionBox()`'s
+   tag list (they gate the core's unused `include/*.go`, so they add no code).
    Copy the resulting `libcore.aar` to `app\libs\libcore.aar`.
 5. Set `local.properties` at the repo root to `sdk.dir=<path-to-Android-Sdk>`
    (forward slashes or escaped backslashes). The app module itself needs no
