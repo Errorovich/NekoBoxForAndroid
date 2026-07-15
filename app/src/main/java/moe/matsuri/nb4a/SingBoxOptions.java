@@ -1070,6 +1070,11 @@ public class SingBoxOptions {
         @SerializedName("final")
         public String final_;
 
+        // sing-box 1.12+: resolver for outbound server domain addresses. Required by
+        // outbounds that force domain resolution (naive, tailscale). String shorthand
+        // for a DNS server tag is accepted by the core.
+        public String default_domain_resolver;
+
         public Boolean find_process;
 
         public Boolean auto_detect_interface;

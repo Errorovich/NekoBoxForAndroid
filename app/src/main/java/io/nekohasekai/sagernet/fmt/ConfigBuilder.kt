@@ -305,6 +305,10 @@ fun buildConfig(
             rules = mutableListOf()
             rule_set = mutableListOf()
             // concurrent_dial removed: not present in sing-box 1.13 route options
+            // sing-box 1.12+ requires a resolver for outbound server domains;
+            // naive/tailscale force domain resolution and fail without it.
+            // dns-direct is always present (see the dns servers built below).
+            default_domain_resolver = "dns-direct"
         }
 
         // returns outbound tag
