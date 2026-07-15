@@ -250,6 +250,12 @@ fun Project.setupDebugBuildId() {
     tasks.matching { it.name.matches(Regex("merge.*DebugAssets")) }.configureEach {
         dependsOn(genTask)
     }
+    tasks.matching {
+        it.name.contains("debug", ignoreCase = true) &&
+            it.name.contains("lint", ignoreCase = true)
+    }.configureEach {
+        dependsOn(genTask)
+    }
 }
 
 private fun Project.gitOutput(vararg args: String): String? = try {
