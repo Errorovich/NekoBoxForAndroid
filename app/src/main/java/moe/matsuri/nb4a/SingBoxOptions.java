@@ -4727,4 +4727,118 @@ public class SingBoxOptions {
 
     }
 
+    public static class Outbound_MieruOptions extends Outbound {
+
+        // Generate note: nested type DialerOptions
+        public String detour;
+
+        public String bind_interface;
+
+        public String inet4_bind_address;
+
+        public String inet6_bind_address;
+
+        public String protect_path;
+
+        public Integer routing_mark;
+
+        public Boolean reuse_addr;
+
+        public String connect_timeout;
+
+        public Boolean tcp_fast_open;
+
+        public Boolean tcp_multi_path;
+
+        public Boolean udp_fragment;
+
+        public String domain_strategy;
+
+        public String network_strategy;
+
+        public List<String> network_type;
+
+        public List<String> fallback_network_type;
+
+        public String fallback_delay;
+
+        // Generate note: nested type ServerOptions
+        public String server;
+
+        public Integer server_port;
+
+        // Mieru specific options
+        public List<String> server_ports;
+
+        public String transport;
+
+        public String username;
+
+        public String password;
+
+        public String multiplexing;
+
+        public String traffic_pattern;
+
+    }
+
+    public static class Outbound_NaiveOptions extends Outbound {
+
+        // Generate note: nested type DialerOptions
+        public String detour;
+
+        public String bind_interface;
+
+        public String inet4_bind_address;
+
+        public String inet6_bind_address;
+
+        public String protect_path;
+
+        public Integer routing_mark;
+
+        public Boolean reuse_addr;
+
+        public String connect_timeout;
+
+        public Boolean tcp_fast_open;
+
+        public Boolean tcp_multi_path;
+
+        public Boolean udp_fragment;
+
+        public String domain_strategy;
+
+        public String network_strategy;
+
+        public List<String> network_type;
+
+        public List<String> fallback_network_type;
+
+        public String fallback_delay;
+
+        // Generate note: nested type ServerOptions
+        public String server;
+
+        public Integer server_port;
+
+        // Naive specific options
+        public String username;
+
+        public String password;
+
+        public Integer insecure_concurrency;
+
+        public Map<String, String> extra_headers;
+
+        public Boolean quic;
+
+        public String quic_congestion_control;
+
+        public String network;
+
+        public OutboundTLSOptions tls;
+
+    }
+
 }

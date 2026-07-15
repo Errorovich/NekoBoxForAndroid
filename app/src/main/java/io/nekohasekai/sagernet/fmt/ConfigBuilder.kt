@@ -26,6 +26,10 @@ import io.nekohasekai.sagernet.fmt.v2ray.StandardV2RayBean
 import io.nekohasekai.sagernet.fmt.v2ray.buildSingBoxOutboundStandardV2RayBean
 import io.nekohasekai.sagernet.fmt.snell.SnellBean
 import io.nekohasekai.sagernet.fmt.snell.buildSingBoxOutboundSnellBean
+import io.nekohasekai.sagernet.fmt.mieru.MieruBean
+import io.nekohasekai.sagernet.fmt.mieru.buildSingBoxOutboundMieruBean
+import io.nekohasekai.sagernet.fmt.naive.NaiveBean
+import io.nekohasekai.sagernet.fmt.naive.buildSingBoxOutboundNaiveBean
 import io.nekohasekai.sagernet.fmt.wireguard.WireGuardBean
 import io.nekohasekai.sagernet.fmt.wireguard.buildSingBoxOutboundWireguardBean
 import io.nekohasekai.sagernet.ktx.isIpAddress
@@ -459,6 +463,12 @@ fun buildConfig(
 
                         is SnellBean ->
                             buildSingBoxOutboundSnellBean(bean)
+
+                        is MieruBean ->
+                            buildSingBoxOutboundMieruBean(bean)
+
+                        is NaiveBean ->
+                            buildSingBoxOutboundNaiveBean(bean)
 
                         else -> throw IllegalStateException("can't reach")
                     }
