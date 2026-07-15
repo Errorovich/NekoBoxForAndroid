@@ -7,6 +7,7 @@ import (
 	"log"
 	"net"
 	"net/netip"
+	"regexp"
 	"strings"
 	"sync"
 	"syscall"
@@ -254,7 +255,15 @@ var boxPlatformLogWriter sblog.PlatformWriter = &boxPlatformLogWriterWrapper{}
 
 func (w *boxPlatformLogWriterWrapper) DisableColors() bool { return true }
 
+// ansiEscape matches ANSI SGR (color) sequences like \x1b[37m or \x1b[38;5;41m.
+var ansiEscape = regexp.MustCompile("\x1b\\[[0-9;]*m")
+
 func (w *boxPlatformLogWriterWrapper) WriteMessage(level uint8, message string) {
+	// sing-box's platform log formatter ignores DisableColors() -- the wiring
+	// that would honor it is commented out in log/observable.go -- so it emits
+	// colored output. Strip the ANSI codes for the plain-text neko.log / GUI
+	// log view (e.g. "\x1b[37mDEBUG\x1b[0m[0000]" -> "DEBUG[0000]").
+	message = ansiEscape.ReplaceAllString(message, "")
 	if !strings.HasSuffix(message, "\n") {
 		message += "\n"
 	}
