@@ -7,6 +7,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import androidx.room.migration.AutoMigrationSpec
+import androidx.sqlite.db.SupportSQLiteDatabase
 import dev.matrix.roomigrant.GenerateRoomMigrations
 import io.nekohasekai.sagernet.Key
 import io.nekohasekai.sagernet.SagerNet
@@ -43,7 +44,16 @@ abstract class SagerDatabase : RoomDatabase() {
         DeleteColumn(tableName = "proxy_entities", columnName = "trojanGoBean"),
         DeleteColumn(tableName = "proxy_entities", columnName = "nekoBean")
     )
-    class Migration9to10 : AutoMigrationSpec
+    class Migration9to10 : AutoMigrationSpec {
+        // Dropping a bean column leaves its rows behind, and a row whose type no
+        // longer has a bean kills requireBean() as soon as the profile list binds
+        // it. Type ids are spelled out because they must keep meaning what they
+        // meant at this schema version: 3 = ShadowsocksR, whose rows the 8 -> 9
+        // migration forgot, 7 = Trojan-Go, 999 = Neko.
+        override fun onPostMigrate(db: SupportSQLiteDatabase) {
+            db.execSQL("DELETE FROM proxy_entities WHERE type IN (3, 7, 999)")
+        }
+    }
 
     companion object {
         @OptIn(DelicateCoroutinesApi::class)
