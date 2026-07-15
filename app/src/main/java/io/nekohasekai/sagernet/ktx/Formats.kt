@@ -18,10 +18,7 @@ import io.nekohasekai.sagernet.fmt.tuic.parseTuic
 import io.nekohasekai.sagernet.fmt.juicity.parseJuicity
 import io.nekohasekai.sagernet.fmt.trojan_go.parseTrojanGo
 import io.nekohasekai.sagernet.fmt.v2ray.parseV2Ray
-import io.nekohasekai.sagernet.fmt.wireguard.parseWireGuardLink
 import moe.matsuri.nb4a.proxy.anytls.parseAnytls
-import moe.matsuri.nb4a.proxy.config.parseSingBoxLink
-import moe.matsuri.nb4a.proxy.shadowtls.parseShadowTLS
 import moe.matsuri.nb4a.utils.JavaUtil.gson
 import moe.matsuri.nb4a.utils.Util
 import okhttp3.HttpUrl
@@ -249,27 +246,6 @@ suspend fun parseProxies(text: String): List<AbstractBean> {
             Logs.d("Try parse mieru simple link: $this")
             runCatching {
                 entities.add(parseMieru(this))
-            }.onFailure {
-                Logs.w(it)
-            }
-        } else if (startsWith("wireguard://") || startsWith("wg://")) {
-            Logs.d("Try parse WireGuard link: $this")
-            runCatching {
-                entities.add(parseWireGuardLink(this))
-            }.onFailure {
-                Logs.w(it)
-            }
-        } else if (startsWith("shadowtls://")) {
-            Logs.d("Try parse ShadowTLS link: $this")
-            runCatching {
-                entities.add(parseShadowTLS(this))
-            }.onFailure {
-                Logs.w(it)
-            }
-        } else if (startsWith("sing-box://")) {
-            Logs.d("Try parse sing-box profile link: $this")
-            runCatching {
-                entities.add(parseSingBoxLink(this))
             }.onFailure {
                 Logs.w(it)
             }
