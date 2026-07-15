@@ -31,7 +31,7 @@ import io.nekohasekai.sagernet.fmt.mieru.buildSingBoxOutboundMieruBean
 import io.nekohasekai.sagernet.fmt.naive.NaiveBean
 import io.nekohasekai.sagernet.fmt.naive.buildSingBoxOutboundNaiveBean
 import io.nekohasekai.sagernet.fmt.wireguard.WireGuardBean
-import io.nekohasekai.sagernet.fmt.wireguard.buildSingBoxOutboundWireguardBean
+import io.nekohasekai.sagernet.fmt.wireguard.buildSingBoxEndpointWireguardBean
 import io.nekohasekai.sagernet.ktx.isIpAddress
 import io.nekohasekai.sagernet.ktx.mkPort
 import io.nekohasekai.sagernet.utils.PackageCache
@@ -94,7 +94,10 @@ private fun serverHostOf(bean: AbstractBean): String? {
     if (bean is ConfigBean) {
         return try {
             val map = gson.fromJson(bean.config, mutableMapOf<String, Any>().javaClass)
-            map["server"]?.toString()?.takeIf { it.isNotBlank() } ?: fallback
+            map["server"]?.toString()?.takeIf { it.isNotBlank() }
+                ?: ((map["peers"] as? List<*>)?.firstOrNull() as? Map<*, *>)
+                    ?.get("address")?.toString()?.takeIf { it.isNotBlank() }
+                ?: fallback
         } catch (_: Exception) {
             fallback
         }
@@ -297,6 +300,7 @@ fun buildConfig(
         }
 
         outbounds = mutableListOf()
+        endpoints = mutableListOf()
 
         // init routing object
         route = RouteOptions().apply {
@@ -339,6 +343,7 @@ fun buildConfig(
 
             profileList.forEachIndexed { index, proxyEntity ->
                 val bean = proxyEntity.requireBean()
+                var currentIsEndpoint = false
 
                 // tagOut: v2ray outbound tag for a profile
                 // profile2 (in) (global)   tag g-(id)
@@ -432,6 +437,9 @@ fun buildConfig(
                 } else {
                     // internal outbound
 
+                    currentIsEndpoint = bean is WireGuardBean ||
+                        (bean is ConfigBean && bean.type == 2)
+
                     currentOutbound = when (bean) {
                         is ConfigBean -> CustomSingBoxOption(bean.config) as SingBoxOption
 
@@ -457,7 +465,7 @@ fun buildConfig(
                             buildSingBoxOutboundShadowsocksBean(bean)
 
                         is WireGuardBean ->
-                            buildSingBoxOutboundWireguardBean(bean)
+                            buildSingBoxEndpointWireguardBean(bean)
 
                         is SSHBean ->
                             buildSingBoxOutboundSSHBean(bean)
@@ -574,7 +582,11 @@ fun buildConfig(
                     }
                 }
 
-                outbounds.add(currentOutbound)
+                if (currentIsEndpoint) {
+                    endpoints.add(currentOutbound)
+                } else {
+                    outbounds.add(currentOutbound)
+                }
                 chainOutbounds.add(currentOutbound)
                 pastOutbound = currentOutbound
                 pastEntity = proxyEntity

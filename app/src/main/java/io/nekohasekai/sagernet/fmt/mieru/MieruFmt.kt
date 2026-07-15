@@ -18,9 +18,41 @@
 
 package io.nekohasekai.sagernet.fmt.mieru
 
+import io.nekohasekai.sagernet.ktx.linkBuilder
+import io.nekohasekai.sagernet.ktx.toLink
+import io.nekohasekai.sagernet.ktx.urlSafe
 import io.nekohasekai.sagernet.ktx.toStringPretty
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import org.json.JSONArray
 import org.json.JSONObject
+
+fun parseMieru(server: String): MieruBean {
+    val link = server.replace("mierus://", "https://").toHttpUrlOrNull()
+        ?: error("invalid mieru simple link $server")
+    return MieruBean().apply {
+        serverAddress = link.host
+        serverPort = link.queryParameterValues("port").firstOrNull()?.toIntOrNull()
+            ?: error("missing mieru port")
+        username = link.username
+        password = link.password
+        protocol = link.queryParameterValues("protocol").firstOrNull()?.uppercase() ?: "TCP"
+        mtu = link.queryParameter("mtu")?.toIntOrNull() ?: 1400
+        name = link.fragment ?: link.queryParameter("profile")
+    }
+}
+
+fun MieruBean.toUri(): String {
+    val builder = linkBuilder()
+        .host(serverAddress)
+        .username(username)
+        .password(password)
+        .addQueryParameter("profile", name.ifBlank { "default" })
+        .addQueryParameter("mtu", mtu.toString())
+        .addQueryParameter("port", serverPort.toString())
+        .addQueryParameter("protocol", protocol.uppercase())
+    if (name.isNotBlank()) builder.encodedFragment(name.urlSafe())
+    return builder.toLink("mierus", appendDefaultPort = false)
+}
 
 fun MieruBean.buildMieruConfig(port: Int): String {
     val serverInfo = JSONArray().apply {

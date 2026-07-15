@@ -113,6 +113,8 @@ public class SingBoxOptions {
 
         public List<SingBoxOption> outbounds;
 
+        public List<SingBoxOption> endpoints;
+
         public RouteOptions route;
 
         public ExperimentalOptions experimental;

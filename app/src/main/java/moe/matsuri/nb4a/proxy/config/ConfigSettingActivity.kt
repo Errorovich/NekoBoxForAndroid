@@ -15,11 +15,13 @@ class ConfigSettingActivity :
     OnPreferenceDataStoreChangeListener {
 
     private val isOutboundOnlyKey = "isOutboundOnly"
+    private var initialType = 0
 
     override fun createEntity() = ConfigBean()
 
     override fun ConfigBean.init() {
         // CustomBean to input
+        initialType = type
         DataStore.profileCacheStore.putBoolean(isOutboundOnlyKey, type == 1)
         DataStore.profileName = name
         DataStore.serverConfig = config
@@ -27,7 +29,9 @@ class ConfigSettingActivity :
 
     override fun ConfigBean.serialize() {
         // CustomBean from input
-        type = if (DataStore.profileCacheStore.getBoolean(isOutboundOnlyKey, false)) 1 else 0
+        type = if (initialType == 2) 2 else if (
+            DataStore.profileCacheStore.getBoolean(isOutboundOnlyKey, false)
+        ) 1 else 0
         name = DataStore.profileName
         config = DataStore.serverConfig
     }

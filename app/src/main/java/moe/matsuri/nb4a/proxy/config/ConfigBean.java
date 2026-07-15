@@ -14,7 +14,7 @@ import moe.matsuri.nb4a.utils.JavaUtil;
 
 public class ConfigBean extends InternalBean {
 
-    public Integer type; // 0=config 1=outbound
+    public Integer type; // 0=config 1=outbound 2=endpoint
     public String config;
 
     @Override
@@ -50,16 +50,19 @@ public class ConfigBean extends InternalBean {
     }
 
     public String displayType() {
-        if (type != null && type == 1 && JavaUtil.isNotBlank(config)) {
+        if (type != null && (type == 1 || type == 2) && JavaUtil.isNotBlank(config)) {
             try {
                 JsonObject json = JavaUtil.gson.fromJson(config, JsonObject.class);
                 if (json != null && json.has("type")) {
-                    return json.get("type").getAsString() + " (sing-box)";
+                    String kind = type == 2 ? "endpoint" : "outbound";
+                    return json.get("type").getAsString() + " (sing-box " + kind + ")";
                 }
             } catch (Exception ignored) {
             }
         }
-        return type != null && type == 0 ? "sing-box config" : "sing-box outbound";
+        if (type != null && type == 0) return "sing-box config";
+        if (type != null && type == 2) return "sing-box endpoint";
+        return "sing-box outbound";
     }
 
     @NotNull

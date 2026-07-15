@@ -6,17 +6,22 @@ import io.nekohasekai.sagernet.fmt.Serializable
 import io.nekohasekai.sagernet.fmt.http.parseHttp
 import io.nekohasekai.sagernet.fmt.hysteria.parseHysteria1
 import io.nekohasekai.sagernet.fmt.hysteria.parseHysteria2
+import io.nekohasekai.sagernet.fmt.mieru.parseMieru
 import io.nekohasekai.sagernet.fmt.naive.parseNaive
 import io.nekohasekai.sagernet.fmt.parseUniversal
 import io.nekohasekai.sagernet.fmt.shadowsocks.parseShadowsocks
 import io.nekohasekai.sagernet.fmt.snell.parseSnell
 import io.nekohasekai.sagernet.fmt.socks.parseSOCKS
+import io.nekohasekai.sagernet.fmt.ssh.parseSSH
 import io.nekohasekai.sagernet.fmt.trojan.parseTrojan
 import io.nekohasekai.sagernet.fmt.tuic.parseTuic
 import io.nekohasekai.sagernet.fmt.juicity.parseJuicity
 import io.nekohasekai.sagernet.fmt.trojan_go.parseTrojanGo
 import io.nekohasekai.sagernet.fmt.v2ray.parseV2Ray
+import io.nekohasekai.sagernet.fmt.wireguard.parseWireGuardLink
 import moe.matsuri.nb4a.proxy.anytls.parseAnytls
+import moe.matsuri.nb4a.proxy.config.parseSingBoxLink
+import moe.matsuri.nb4a.proxy.shadowtls.parseShadowTLS
 import moe.matsuri.nb4a.utils.JavaUtil.gson
 import moe.matsuri.nb4a.utils.Util
 import okhttp3.HttpUrl
@@ -230,6 +235,41 @@ suspend fun parseProxies(text: String): List<AbstractBean> {
             Logs.d("Try parse anytls link: $this")
             runCatching {
                 entities.add(parseAnytls(this))
+            }.onFailure {
+                Logs.w(it)
+            }
+        } else if (startsWith("ssh://")) {
+            Logs.d("Try parse SSH link: $this")
+            runCatching {
+                entities.add(parseSSH(this))
+            }.onFailure {
+                Logs.w(it)
+            }
+        } else if (startsWith("mierus://")) {
+            Logs.d("Try parse mieru simple link: $this")
+            runCatching {
+                entities.add(parseMieru(this))
+            }.onFailure {
+                Logs.w(it)
+            }
+        } else if (startsWith("wireguard://") || startsWith("wg://")) {
+            Logs.d("Try parse WireGuard link: $this")
+            runCatching {
+                entities.add(parseWireGuardLink(this))
+            }.onFailure {
+                Logs.w(it)
+            }
+        } else if (startsWith("shadowtls://")) {
+            Logs.d("Try parse ShadowTLS link: $this")
+            runCatching {
+                entities.add(parseShadowTLS(this))
+            }.onFailure {
+                Logs.w(it)
+            }
+        } else if (startsWith("sing-box://")) {
+            Logs.d("Try parse sing-box profile link: $this")
+            runCatching {
+                entities.add(parseSingBoxLink(this))
             }.onFailure {
                 Logs.w(it)
             }
