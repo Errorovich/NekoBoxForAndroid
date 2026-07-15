@@ -17,6 +17,7 @@ import (
 	"github.com/sagernet/sing-box/log"
 	"github.com/sagernet/sing-box/option"
 	"github.com/sagernet/sing-box/protocol/anytls"
+	"github.com/sagernet/sing-box/protocol/awg"
 	"github.com/sagernet/sing-box/protocol/block"
 	"github.com/sagernet/sing-box/protocol/direct"
 	protocolDns "github.com/sagernet/sing-box/protocol/dns"
@@ -24,6 +25,7 @@ import (
 	"github.com/sagernet/sing-box/protocol/http"
 	"github.com/sagernet/sing-box/protocol/hysteria"
 	"github.com/sagernet/sing-box/protocol/hysteria2"
+	"github.com/sagernet/sing-box/protocol/mieru"
 	"github.com/sagernet/sing-box/protocol/mixed"
 	"github.com/sagernet/sing-box/protocol/redirect"
 	"github.com/sagernet/sing-box/protocol/shadowsocks"
@@ -31,8 +33,10 @@ import (
 	snellprotocol "github.com/sagernet/sing-box/protocol/snell"
 	"github.com/sagernet/sing-box/protocol/socks"
 	"github.com/sagernet/sing-box/protocol/ssh"
+	"github.com/sagernet/sing-box/protocol/tailscale"
 	"github.com/sagernet/sing-box/protocol/tor"
 	"github.com/sagernet/sing-box/protocol/trojan"
+	"github.com/sagernet/sing-box/protocol/trusttunnel"
 	"github.com/sagernet/sing-box/protocol/tuic"
 	"github.com/sagernet/sing-box/protocol/tun"
 	"github.com/sagernet/sing-box/protocol/vless"
@@ -82,22 +86,39 @@ func nekoboxAndroidOutboundRegistry() *outbound.Registry {
 	vless.RegisterOutbound(registry)
 	anytls.RegisterOutbound(registry)
 	snellprotocol.RegisterOutbound(registry)
+	mieru.RegisterOutbound(registry)
+	trusttunnel.RegisterOutbound(registry)
 
 	hysteria.RegisterOutbound(registry)
 	tuic.RegisterOutbound(registry)
 	hysteria2.RegisterOutbound(registry)
 	juicity.RegisterOutbound(registry)
 
-	// wireguard is registered as an endpoint only in this sing-box lineage
-	// (see nekoboxAndroidEndpointRegistry); the outbound registration was removed upstream.
+	// naive outbound links Chromium cronet, so it is gated behind the
+	// with_naive_outbound build tag (see box_include_naive.go). The linked
+	// libcronet is ~5-9 MB/ABI (not the 60+ MB static archive), so enabling it
+	// is comparable in cost to the other optional protocols.
+	if registerNaiveOutbound != nil {
+		registerNaiveOutbound(registry)
+	}
+
+	// wireguard/awg/tailscale are registered as endpoints only in this sing-box
+	// lineage (see nekoboxAndroidEndpointRegistry); the wireguard outbound
+	// registration was removed upstream.
 
 	return registry
 }
+
+// registerNaiveOutbound is wired up by box_include_naive.go when the
+// with_naive_outbound build tag is set; nil otherwise.
+var registerNaiveOutbound func(*outbound.Registry)
 
 func nekoboxAndroidEndpointRegistry() *endpoint.Registry {
 	registry := endpoint.NewRegistry()
 
 	wireguard.RegisterEndpoint(registry)
+	awg.RegisterEndpoint(registry)
+	tailscale.RegisterEndpoint(registry)
 
 	return registry
 }
