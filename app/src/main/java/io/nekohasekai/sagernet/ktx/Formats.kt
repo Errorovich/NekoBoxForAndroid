@@ -13,6 +13,8 @@ import io.nekohasekai.sagernet.fmt.shadowsocks.parseShadowsocks
 import io.nekohasekai.sagernet.fmt.snell.parseSnell
 import io.nekohasekai.sagernet.fmt.socks.parseSOCKS
 import io.nekohasekai.sagernet.fmt.ssh.parseSSH
+import io.nekohasekai.sagernet.fmt.awg.parseAmneziaVpnLink
+import io.nekohasekai.sagernet.fmt.trusttunnel.parseTrustTunnel
 import io.nekohasekai.sagernet.fmt.trojan.parseTrojan
 import io.nekohasekai.sagernet.fmt.tuic.parseTuic
 import io.nekohasekai.sagernet.fmt.juicity.parseJuicity
@@ -231,6 +233,20 @@ suspend fun parseProxies(text: String): List<AbstractBean> {
             Logs.d("Try parse SSH link: $this")
             runCatching {
                 entities.add(parseSSH(this))
+            }.onFailure {
+                Logs.w(it)
+            }
+        } else if (startsWith("vpn://")) {
+            Logs.d("Try parse Amnezia link: $this")
+            runCatching {
+                entities.add(parseAmneziaVpnLink(this))
+            }.onFailure {
+                Logs.w(it)
+            }
+        } else if (startsWith("tt://")) {
+            Logs.d("Try parse TrustTunnel link: $this")
+            runCatching {
+                entities.add(parseTrustTunnel(this))
             }.onFailure {
                 Logs.w(it)
             }

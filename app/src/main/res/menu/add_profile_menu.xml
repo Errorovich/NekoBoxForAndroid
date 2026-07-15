@@ -73,6 +73,12 @@
                         android:id="@+id/action_new_wg"
                         android:title="@string/action_wireguard" />
                     <item
+                        android:id="@+id/action_new_awg"
+                        android:title="@string/action_awg" />
+                    <item
+                        android:id="@+id/action_new_trusttunnel"
+                        android:title="@string/action_trusttunnel" />
+                    <item
                         android:id="@+id/action_new_config"
                         android:title="@string/custom_config" />
                     <item

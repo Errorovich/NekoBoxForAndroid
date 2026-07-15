@@ -1,0 +1,58 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <EditTextPreference
+        app:icon="@drawable/ic_social_emoji_symbols"
+        app:key="name"
+        app:title="@string/profile_name"
+        app:useSimpleSummaryProvider="true" />
+
+    <PreferenceCategory app:title="@string/proxy_cat">
+        <EditTextPreference
+            app:icon="@drawable/ic_hardware_router"
+            app:key="serverAddress"
+            app:title="@string/server_address"
+            app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
+            app:icon="@drawable/ic_maps_directions_boat"
+            app:key="serverPort"
+            app:title="@string/server_port"
+            app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
+            app:icon="@drawable/ic_baseline_person_24"
+            app:key="username"
+            app:title="@string/username"
+            app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
+            app:dialogLayout="@layout/layout_password_dialog"
+            app:icon="@drawable/ic_settings_password"
+            app:key="password"
+            app:title="@string/password" />
+        <SwitchPreference
+            app:icon="@drawable/ic_baseline_running_with_errors_24"
+            app:key="quic"
+            app:summary="@string/trusttunnel_quic_sum"
+            app:title="@string/trusttunnel_quic" />
+        <SwitchPreference
+            app:icon="@drawable/ic_maps_360"
+            app:key="healthCheck"
+            app:title="@string/trusttunnel_health_check" />
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/tls_camouflage_settings">
+        <EditTextPreference
+            app:icon="@drawable/ic_baseline_domain_24"
+            app:key="sni"
+            app:title="@string/sni"
+            app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
+            app:icon="@drawable/ic_action_copyright"
+            app:key="certificates"
+            app:title="@string/certificates"
+            app:useSimpleSummaryProvider="true" />
+        <SwitchPreference
+            app:icon="@drawable/ic_baseline_running_with_errors_24"
+            app:key="allowInsecure"
+            app:title="@string/allow_insecure" />
+    </PreferenceCategory>
+
+</PreferenceScreen>

@@ -238,6 +238,8 @@
     <string name="action_hysteria" translatable="false">Hysteria</string>
     <string name="action_ssh" translatable="false">SSH</string>
     <string name="action_wireguard" translatable="false">WireGuard</string>
+    <string name="action_awg" translatable="false">AmneziaWG</string>
+    <string name="action_trusttunnel" translatable="false">TrustTunnel</string>
     <string name="action_tuic" translatable="false">TUIC</string>
     <string name="action_juicity" translatable="false">Juicity</string>
     <string name="proxy_chain">Proxy Chain</string>
@@ -472,6 +474,34 @@
     <string name="wireguard_local_address">Local Address</string>
     <string name="wireguard_public_key">Peer Public Key</string>
     <string name="wireguard_psk">Peer Pre-Shared Key</string>
+
+    <string name="awg_persistent_keepalive">Persistent Keepalive</string>
+    <string name="awg_junk_cat">Junk packets</string>
+    <string name="awg_jc" translatable="false">Jc</string>
+    <string name="awg_jc_sum">Junk packet count. 0 disables junk packets; otherwise Jmin and Jmax must be set and Jmin must not exceed Jmax.</string>
+    <string name="awg_jmin" translatable="false">Jmin</string>
+    <string name="awg_jmax" translatable="false">Jmax</string>
+    <string name="awg_s1" translatable="false">S1</string>
+    <string name="awg_s2" translatable="false">S2</string>
+    <string name="awg_s3" translatable="false">S3</string>
+    <string name="awg_s4" translatable="false">S4</string>
+    <string name="awg_header_cat">Magic headers</string>
+    <string name="awg_header_sum">A number or a \"start-end\" range. Empty means the standard WireGuard message type. The four headers must not overlap.</string>
+    <string name="awg_h1" translatable="false">H1</string>
+    <string name="awg_h2" translatable="false">H2</string>
+    <string name="awg_h3" translatable="false">H3</string>
+    <string name="awg_h4" translatable="false">H4</string>
+    <string name="awg_ipacket_cat">Special packets</string>
+    <string name="awg_ipacket_sum">AmneziaWG 1.5 packet templates. Leave empty unless the server defines them.</string>
+    <string name="awg_i1" translatable="false">I1</string>
+    <string name="awg_i2" translatable="false">I2</string>
+    <string name="awg_i3" translatable="false">I3</string>
+    <string name="awg_i4" translatable="false">I4</string>
+    <string name="awg_i5" translatable="false">I5</string>
+
+    <string name="trusttunnel_quic">HTTP/3</string>
+    <string name="trusttunnel_quic_sum">Carry the tunnel over QUIC instead of HTTP/2. Must match the server.</string>
+    <string name="trusttunnel_health_check">Health check</string>
 
     <string name="cloudflare_wrap" translatable="false">Cloudflare Warp</string>
     <string name="warp_license">CloudFlare Warp is a free WireGuard VPN provider. By using it, you

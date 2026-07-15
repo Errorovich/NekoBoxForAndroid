@@ -30,6 +30,8 @@ import io.nekohasekai.sagernet.fmt.juicity.JuicityBean
 import io.nekohasekai.sagernet.fmt.juicity.toUri
 import io.nekohasekai.sagernet.fmt.v2ray.*
 import io.nekohasekai.sagernet.fmt.wireguard.WireGuardBean
+import io.nekohasekai.sagernet.fmt.awg.AWGBean
+import io.nekohasekai.sagernet.fmt.trusttunnel.TrustTunnelBean
 import io.nekohasekai.sagernet.ktx.app
 import io.nekohasekai.sagernet.ui.profile.*
 import moe.matsuri.nb4a.SingBoxOptions.BrutalOptions
@@ -67,6 +69,8 @@ data class ProxyEntity(
     var juicityBean: JuicityBean? = null,
     var sshBean: SSHBean? = null,
     var wgBean: WireGuardBean? = null,
+    var awgBean: AWGBean? = null,
+    var trustTunnelBean: TrustTunnelBean? = null,
     var shadowTLSBean: ShadowTLSBean? = null,
     var anyTLSBean: AnyTLSBean? = null,
     var chainBean: ChainBean? = null,
@@ -83,6 +87,8 @@ data class ProxyEntity(
 
         const val TYPE_SSH = 17
         const val TYPE_WG = 18
+        const val TYPE_AWG = 25
+        const val TYPE_TRUSTTUNNEL = 26
 
         const val TYPE_NAIVE = 9
         const val TYPE_HYSTERIA = 15
@@ -171,6 +177,8 @@ data class ProxyEntity(
             TYPE_HYSTERIA -> hysteriaBean = KryoConverters.hysteriaDeserialize(byteArray)
             TYPE_SSH -> sshBean = KryoConverters.sshDeserialize(byteArray)
             TYPE_WG -> wgBean = KryoConverters.wireguardDeserialize(byteArray)
+            TYPE_AWG -> awgBean = KryoConverters.awgDeserialize(byteArray)
+            TYPE_TRUSTTUNNEL -> trustTunnelBean = KryoConverters.trustTunnelDeserialize(byteArray)
             TYPE_TUIC -> tuicBean = KryoConverters.tuicDeserialize(byteArray)
             TYPE_JUICITY -> juicityBean = KryoConverters.juicityDeserialize(byteArray)
             TYPE_SHADOWTLS -> shadowTLSBean = KryoConverters.shadowTLSDeserialize(byteArray)
@@ -192,6 +200,8 @@ data class ProxyEntity(
         TYPE_HYSTERIA -> "Hysteria" + hysteriaBean!!.protocolVersion
         TYPE_SSH -> "SSH"
         TYPE_WG -> "WireGuard"
+        TYPE_AWG -> "AmneziaWG"
+        TYPE_TRUSTTUNNEL -> "TrustTunnel"
         TYPE_TUIC -> "TUIC"
         TYPE_JUICITY -> "Juicity"
         TYPE_SHADOWTLS -> "ShadowTLS"
@@ -217,6 +227,8 @@ data class ProxyEntity(
             TYPE_HYSTERIA -> hysteriaBean
             TYPE_SSH -> sshBean
             TYPE_WG -> wgBean
+            TYPE_AWG -> awgBean
+            TYPE_TRUSTTUNNEL -> trustTunnelBean
             TYPE_TUIC -> tuicBean
             TYPE_JUICITY -> juicityBean
             TYPE_SHADOWTLS -> shadowTLSBean
@@ -239,6 +251,12 @@ data class ProxyEntity(
         return when (requireBean()) {
             is SSHBean -> false
             is WireGuardBean -> false
+            // Amnezia's vpn:// describes a whole app config, not a single
+            // profile, so it is import-only.
+            is AWGBean -> false
+            // tt:// is a real per-profile link, but only parsing it is implemented
+            // so far -- nothing here can write one back out yet.
+            is TrustTunnelBean -> false
             is ShadowTLSBean -> false
             is ConfigBean -> false
             else -> true
@@ -356,6 +374,8 @@ data class ProxyEntity(
         hysteriaBean = null
         sshBean = null
         wgBean = null
+        awgBean = null
+        trustTunnelBean = null
         tuicBean = null
         juicityBean = null
         shadowTLSBean = null
@@ -414,6 +434,16 @@ data class ProxyEntity(
                 wgBean = bean
             }
 
+            is AWGBean -> {
+                type = TYPE_AWG
+                awgBean = bean
+            }
+
+            is TrustTunnelBean -> {
+                type = TYPE_TRUSTTUNNEL
+                trustTunnelBean = bean
+            }
+
             is TuicBean -> {
                 type = TYPE_TUIC
                 tuicBean = bean
@@ -467,6 +497,8 @@ data class ProxyEntity(
                 TYPE_HYSTERIA -> HysteriaSettingsActivity::class.java
                 TYPE_SSH -> SSHSettingsActivity::class.java
                 TYPE_WG -> WireGuardSettingsActivity::class.java
+                TYPE_AWG -> AWGSettingsActivity::class.java
+                TYPE_TRUSTTUNNEL -> TrustTunnelSettingsActivity::class.java
                 TYPE_TUIC -> TuicSettingsActivity::class.java
                 TYPE_JUICITY -> JuicitySettingsActivity::class.java
                 TYPE_SHADOWTLS -> ShadowTLSSettingsActivity::class.java

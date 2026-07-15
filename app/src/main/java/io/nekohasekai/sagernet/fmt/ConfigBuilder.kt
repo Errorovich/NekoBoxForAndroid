@@ -31,6 +31,10 @@ import io.nekohasekai.sagernet.fmt.naive.NaiveBean
 import io.nekohasekai.sagernet.fmt.naive.buildSingBoxOutboundNaiveBean
 import io.nekohasekai.sagernet.fmt.wireguard.WireGuardBean
 import io.nekohasekai.sagernet.fmt.wireguard.buildSingBoxEndpointWireguardBean
+import io.nekohasekai.sagernet.fmt.awg.AWGBean
+import io.nekohasekai.sagernet.fmt.awg.buildSingBoxEndpointAWGBean
+import io.nekohasekai.sagernet.fmt.trusttunnel.TrustTunnelBean
+import io.nekohasekai.sagernet.fmt.trusttunnel.buildSingBoxOutboundTrustTunnelBean
 import io.nekohasekai.sagernet.ktx.isIpAddress
 import io.nekohasekai.sagernet.ktx.mkPort
 import io.nekohasekai.sagernet.utils.PackageCache
@@ -409,7 +413,7 @@ fun buildConfig(
                     globalOutbounds[proxyEntity.id] = tagOut
                 }
 
-                currentIsEndpoint = bean is WireGuardBean ||
+                currentIsEndpoint = bean is WireGuardBean || bean is AWGBean ||
                     (bean is ConfigBean && bean.type == 2)
 
                 currentOutbound = when (bean) {
@@ -438,6 +442,12 @@ fun buildConfig(
 
                     is WireGuardBean ->
                         buildSingBoxEndpointWireguardBean(bean)
+
+                    is AWGBean ->
+                        buildSingBoxEndpointAWGBean(bean)
+
+                    is TrustTunnelBean ->
+                        buildSingBoxOutboundTrustTunnelBean(bean)
 
                     is SSHBean ->
                         buildSingBoxOutboundSSHBean(bean)
@@ -572,8 +582,6 @@ fun buildConfig(
                 inbound = listOf(TAG_MIXED)
                 outbound = mainProxyTag
             })
-
-            route.final_ = mainProxyTag
         } else {
             // 应用用户规则
             for (rule in extraRules) {
@@ -767,6 +775,14 @@ fun buildConfig(
                 }
             }
         }
+
+        // Name the profile as the fallback explicitly. Leaving this empty makes
+        // the core fall back to the first *outbound*, which happens to be the
+        // profile for an ordinary one -- but a wireguard/awg profile lives in
+        // "endpoints", so the first outbound is "direct" and every unmatched
+        // connection would silently bypass the tunnel. The core resolves a final
+        // tag against endpoints too, so naming it works for both kinds.
+        route.final_ = mainProxyTag
 
         // 对 rule_set tag 去重
         if (route.rule_set != null) {
