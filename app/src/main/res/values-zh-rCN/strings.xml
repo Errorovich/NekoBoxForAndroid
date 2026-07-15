@@ -163,9 +163,6 @@
     <string name="plugin">插件</string>
     <string name="plugin_configure">设置…</string>
     <string name="plugin_disabled">已停用</string>
-    <string name="plugin_unknown">未知插件: %s</string>
-    <string name="plugin_untrusted">请注意: 此插件的不来自可靠的来源.</string>
-    <string name="plugin_auto_connect_unlock_only">此插件可能不支持自动连接</string>
     <string name="proxy_cat">服务器设置</string>
     <string name="unsaved_changes_prompt">是否要保存修改？</string>
     <string name="yes">是</string>
@@ -335,13 +332,6 @@
     <string name="update_when_connected_only_sum">防止 IP 地址泄漏</string>
     <string name="subscription_user_agent">用户代理</string>
     <string name="confirm">确认</string>
-    <string name="missing_plugin">缺少插件</string>
-    <string name="profile_requiring_plugin">配置 %s 需要插件 %s, 但找不到.</string>
-    <string name="action_learn_more">了解更多</string>
-    <string name="action_download">下载</string>
-    <string name="install_from_play_store">从 Play Store 安装</string>
-    <string name="install_from_fdroid">从 F-Droid 安装</string>
-    <string name="download">下载</string>
     <string name="ooc_subscription_token_invalid">无效的 OOCv1 Token</string>
     <string name="ooc_warning">警告</string>
     <string name="ooc_missing_protocol">该订阅要求 %s 协议支持, 但找不到. 不支持的配置将被忽略.</string>

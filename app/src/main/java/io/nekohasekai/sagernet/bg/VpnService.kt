@@ -131,9 +131,9 @@ class VpnService : BaseVpnService(),
         val proxyApps = DataStore.proxyApps
         var bypass = DataStore.bypass
         val workaroundSYSTEM = false /* DataStore.tunImplementation == TunImplementation.SYSTEM */
-        val needBypassRootUid = workaroundSYSTEM || data.proxy!!.config.trafficMap.values.any {
-            it[0].hysteriaBean?.protocol == HysteriaBean.PROTOCOL_FAKETCP
-        }
+        // Nothing runs as root any more: hysteria's faketcp went away with the
+        // external plugins.
+        val needBypassRootUid = workaroundSYSTEM
 
         if (proxyApps || needBypassRootUid) {
             val individual = mutableSetOf<String>()

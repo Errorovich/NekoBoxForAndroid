@@ -18,14 +18,15 @@ import kotlinx.coroutines.launch
 
 @Database(
     entities = [ProxyGroup::class, ProxyEntity::class, RuleEntity::class],
-    version = 9,
+    version = 10,
     autoMigrations = [
         AutoMigration(from = 3, to = 4),
         AutoMigration(from = 4, to = 5),
         AutoMigration(from = 5, to = 6),
         AutoMigration(from = 6, to = 7),
         AutoMigration(from = 7, to = 8),
-        AutoMigration(from = 8, to = 9, spec = SagerDatabase.Migration8to9::class)
+        AutoMigration(from = 8, to = 9, spec = SagerDatabase.Migration8to9::class),
+        AutoMigration(from = 9, to = 10, spec = SagerDatabase.Migration9to10::class)
     ]
 )
 @TypeConverters(value = [KryoConverters::class, GsonConverters::class])
@@ -35,6 +36,14 @@ abstract class SagerDatabase : RoomDatabase() {
     // Drops the ShadowsocksR (ssrBean) column removed together with SSR support.
     @DeleteColumn(tableName = "proxy_entities", columnName = "ssrBean")
     class Migration8to9 : AutoMigrationSpec
+
+    // Drops the columns of the profile types that went away with external plugin
+    // support: Trojan-Go (plugin-only, upstream dead) and the Neko plugin system.
+    @DeleteColumn.Entries(
+        DeleteColumn(tableName = "proxy_entities", columnName = "trojanGoBean"),
+        DeleteColumn(tableName = "proxy_entities", columnName = "nekoBean")
+    )
+    class Migration9to10 : AutoMigrationSpec
 
     companion object {
         @OptIn(DelicateCoroutinesApi::class)

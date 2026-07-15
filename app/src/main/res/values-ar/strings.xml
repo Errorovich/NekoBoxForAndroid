@@ -240,13 +240,6 @@
     <string name="ooc_warning">تحذير</string>
     <string name="update_subscription_warning">البروکسی غير متصل، هل أنت متأكد أنك تريد متابعة التحديث؟</string>
     <string name="ooc_subscription_token_invalid">رمز OOCv1 غير صالح</string>
-    <string name="download">تحميل</string>
-    <string name="install_from_fdroid">التثبيت من F-Droid</string>
-    <string name="install_from_play_store">التثبيت من متجر Play</string>
-    <string name="action_download">تحميل</string>
-    <string name="action_learn_more">يتعلم أكثر</string>
-    <string name="profile_requiring_plugin">يتطلب ملف التعريف %s تثبيت المكون الإضافي %s، لكن لم يتم العثور عليه.</string>
-    <string name="missing_plugin">في عداد المفقودين المكونات في</string>
     <string name="confirm">أكد</string>
     <string name="subscription_user_agent">وكيل المستخدم</string>
     <string name="update_when_connected_only_sum">منع تسرب عنوان IP</string>
@@ -303,9 +296,6 @@
     <string name="unsaved_changes_prompt">لم يتم حفظ التغييرات. هل تريد حفظ؟</string>
     <string name="ss_cat">إعدادات Shadowsocks</string>
     <string name="proxy_cat">اعدادات الخادم</string>
-    <string name="plugin_auto_connect_unlock_only">قد لا يعمل هذا المكون الإضافي مع الاتصال التلقائي</string>
-    <string name="plugin_untrusted">تحذير: يبدو أن هذا المكون الإضافي لا يأتي من مصدر موثوق ومعروف.</string>
-    <string name="plugin_unknown">مكون إضافي غير معروف %s</string>
     <string name="plugin_disabled">غير مفعّل</string>
     <string name="plugin_configure">تهيئة…</string>
     <string name="plugin">الإضافات</string>

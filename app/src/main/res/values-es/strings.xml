@@ -259,10 +259,7 @@
     <!-- plugin --> 
     <string name="plugin">Complemento</string> 
     <string name="plugin_configure">Configurar…</string> 
-    <string name="plugin_disabled">Desactivado</string> 
-    <string name="plugin_unknown">Complemento desconocido %s</string> 
-    <string name="plugin_untrusted">Advertencia: este complemento no parece provenir de una fuente confiable conocida.</string> 
-    <string name="plugin_auto_connect_unlock_only">Es posible que este complemento no funcione con Autoconectar</string> 
+    <string name="plugin_disabled">Desactivado</string>    
     <string name="proxy_cat">Ajustes del servidor</string> 
     <string name="ss_cat">Ajustes de Shadowsocks</string> 
     <string name="unsaved_changes_prompt">Cambios no guardados. ¿Quieres guardar?</string> 
@@ -324,14 +321,7 @@
     <string name="update_when_connected_only">Actualizar solo cuando está conectado</string> 
     <string name="update_when_connected_only_sum">Evita la fuga de direcciones IP</string> 
     <string name="subscription_user_agent">Agente de usuario</string> 
-    <string name="confirm">Confirmar</string> 
-    <string name="missing_plugin">Complemento faltante</string> 
-    <string name="profile_requiring_plugin">El perfil %s requiere que se instale el complemento %s, pero no se encontró.</string> 
-    <string name="action_learn_more">APRENDER MÁS</string> 
-    <string name="action_download">DESCARGAR</string> 
-    <string name="install_from_play_store">Instalar desde Play Store</string> 
-    <string name="install_from_fdroid">Instalar desde F-Droid</string> 
-    <string name="download">Descargar</string> 
+    <string name="confirm">Confirmar</string>        
     <string name="ooc_subscription_token" translatable="false">OOCv1 API Token</string> 
     <string name="ooc_subscription_token_invalid">Token OOCv1 no válido</string> 
     <string name="update_subscription_warning">El proxy no está conectado, ¿estás seguro de que deseas continuar con la actualización?</string> 

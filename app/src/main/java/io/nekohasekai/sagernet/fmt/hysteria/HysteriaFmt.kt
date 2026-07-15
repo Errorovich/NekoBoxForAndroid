@@ -46,17 +46,8 @@ fun parseHysteria1(url: String): HysteriaBean {
         link.queryParameter("obfsParam")?.also {
             obfuscation = it
         }
-        link.queryParameter("protocol")?.also {
-            when (it) {
-                "faketcp" -> {
-                    protocol = HysteriaBean.PROTOCOL_FAKETCP
-                }
-
-                "wechat-video" -> {
-                    protocol = HysteriaBean.PROTOCOL_WECHAT_VIDEO
-                }
-            }
-        }
+        // ?protocol=faketcp|wechat-video is intentionally ignored: those modes
+        // needed the external hysteria plugin, the core only speaks plain UDP.
     }
 }
 
@@ -143,15 +134,6 @@ fun HysteriaBean.toUri(): String {
             builder.addQueryParameter("obfs", "xplus")
             builder.addQueryParameter("obfsParam", obfuscation)
         }
-        when (protocol) {
-            HysteriaBean.PROTOCOL_FAKETCP -> {
-                builder.addQueryParameter("protocol", "faketcp")
-            }
-
-            HysteriaBean.PROTOCOL_WECHAT_VIDEO -> {
-                builder.addQueryParameter("protocol", "wechat-video")
-            }
-        }
     } else {
         if (sni.isNotBlank()) {
             builder.addQueryParameter("sni", sni)
@@ -181,17 +163,8 @@ fun JSONObject.parseHysteria1Json(): HysteriaBean {
             authPayloadType = HysteriaBean.TYPE_STRING
             authPayload = it
         }
-        getStr("protocol")?.also {
-            when (it) {
-                "faketcp" -> {
-                    protocol = HysteriaBean.PROTOCOL_FAKETCP
-                }
-
-                "wechat-video" -> {
-                    protocol = HysteriaBean.PROTOCOL_WECHAT_VIDEO
-                }
-            }
-        }
+        // "protocol" (faketcp/wechat-video) is ignored: plugin-only, the core
+        // speaks plain UDP.
         sni = getStr("server_name")
         getStr("alpn")?.also { if (it != "none") alpn = it }
         allowInsecure = getBool("insecure")
@@ -200,60 +173,6 @@ fun JSONObject.parseHysteria1Json(): HysteriaBean {
         connectionReceiveWindow = getIntNya("recv_window")
         disableMtuDiscovery = getBool("disable_mtu_discovery")
     }
-}
-
-fun HysteriaBean.buildHysteria1Config(port: Int, cacheFile: (() -> File)?): String {
-    if (protocolVersion != 1) {
-        throw Exception("error version: $protocolVersion")
-    }
-    return JSONObject().apply {
-        put("server", displayAddress())
-        when (protocol) {
-            HysteriaBean.PROTOCOL_FAKETCP -> {
-                put("protocol", "faketcp")
-            }
-
-            HysteriaBean.PROTOCOL_WECHAT_VIDEO -> {
-                put("protocol", "wechat-video")
-            }
-        }
-        put("up_mbps", uploadMbps)
-        put("down_mbps", downloadMbps)
-        put(
-            "socks5", JSONObject(
-                mapOf(
-                    "listen" to "$LOCALHOST:$port",
-                )
-            )
-        )
-        put("retry", 5)
-        put("fast_open", true)
-        put("lazy_start", true)
-        put("obfs", obfuscation)
-        when (authPayloadType) {
-            HysteriaBean.TYPE_BASE64 -> put("auth", authPayload)
-            HysteriaBean.TYPE_STRING -> put("auth_str", authPayload)
-        }
-        if (sni.isBlank() && finalAddress == LOCALHOST && !serverAddress.isIpAddress()) {
-            sni = serverAddress
-        }
-        if (sni.isNotBlank()) {
-            put("server_name", sni)
-        }
-        if (alpn.isNotBlank()) put("alpn", alpn)
-        if (caText.isNotBlank() && cacheFile != null) {
-            val caFile = cacheFile()
-            caFile.writeText(caText)
-            put("ca", caFile.absolutePath)
-        }
-
-        if (allowInsecure) put("insecure", true)
-        if (streamReceiveWindow > 0) put("recv_window_conn", streamReceiveWindow)
-        if (connectionReceiveWindow > 0) put("recv_window", connectionReceiveWindow)
-        if (disableMtuDiscovery) put("disable_mtu_discovery", true)
-
-        put("hop_interval", hopInterval)
-    }.toStringPretty()
 }
 
 fun isMultiPort(hyAddr: String): Boolean {
@@ -265,11 +184,6 @@ fun isMultiPort(hyAddr: String): Boolean {
 
 fun getFirstPort(portStr: String): Int {
     return portStr.substringBefore(":").substringBefore(",").toIntOrNull() ?: 443
-}
-
-fun HysteriaBean.canUseSingBox(): Boolean {
-    if (protocol != HysteriaBean.PROTOCOL_UDP) return false
-    return true
 }
 
 fun buildSingBoxOutboundHysteriaBean(bean: HysteriaBean): SingBoxOptions.SingBoxOption {

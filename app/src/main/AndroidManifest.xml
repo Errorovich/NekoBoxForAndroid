@@ -41,12 +41,6 @@
         android:name="android.hardware.camera.autofocus"
         android:required="false" />
 
-    <queries>
-        <intent>
-            <action android:name="io.nekohasekai.sagernet.plugin.ACTION_NATIVE_PLUGIN" />
-        </intent>
-    </queries>
-
     <application
         android:name="io.nekohasekai.sagernet.SagerNet"
         android:allowBackup="true"
@@ -161,9 +155,6 @@
             android:configChanges="uiMode" />
         <activity
             android:name="io.nekohasekai.sagernet.ui.profile.TrojanSettingsActivity"
-            android:configChanges="uiMode" />
-        <activity
-            android:name="io.nekohasekai.sagernet.ui.profile.TrojanGoSettingsActivity"
             android:configChanges="uiMode" />
         <activity
             android:name="io.nekohasekai.sagernet.ui.profile.MieruSettingsActivity"

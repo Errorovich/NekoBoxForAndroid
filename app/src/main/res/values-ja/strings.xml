@@ -267,9 +267,6 @@
     <string name="plugin">プラグイン</string>
     <string name="plugin_configure">設定…</string>
     <string name="plugin_disabled">無効</string>
-    <string name="plugin_unknown">不明なプラグイン %s</string>
-    <string name="plugin_untrusted">警告: このプラグインは既知の信頼できるソースからのものではないようです。</string>
-    <string name="plugin_auto_connect_unlock_only">このプラグインは自動接続で動作しない可能性があります</string>
     <string name="proxy_cat">サーバー設定</string>
     <string name="ss_cat">Shadowsocks 設定</string>
     <string name="unsaved_changes_prompt">変更が保存されていません。保存しますか？</string>
@@ -338,13 +335,6 @@
     <string name="update_when_connected_only_sum">IP アドレスの漏洩を防止</string>
     <string name="subscription_user_agent">UserAgent</string>
     <string name="confirm">確認</string>
-    <string name="missing_plugin">プラグインがありません</string>
-    <string name="profile_requiring_plugin">プロファイル %s には %s プラグインのインストールが必要ですが、見つかりませんでした。</string>
-    <string name="action_learn_more">詳細</string>
-    <string name="action_download">ダウンロード</string>
-    <string name="install_from_play_store">Play ストアからインストール</string>
-    <string name="install_from_fdroid">F-Droid からインストール</string>
-    <string name="download">ダウンロード</string>
     <string name="ooc_subscription_token_invalid">無効な OOCv1 トークン</string>
     <string name="update_subscription_warning">プロキシが接続されていません。更新を続行してもよろしいですか？</string>
     <string name="ooc_warning">警告</string>

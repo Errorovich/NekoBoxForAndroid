@@ -23,7 +23,6 @@ class HysteriaSettingsActivity : ProfileSettingsActivity<HysteriaBean>() {
         DataStore.serverPorts = serverPorts
         DataStore.serverObfs = obfuscation
         DataStore.serverAuthType = authPayloadType
-        DataStore.serverProtocolInt = protocol
         DataStore.serverPassword = authPayload
         DataStore.serverSNI = sni
         DataStore.serverALPN = alpn
@@ -45,7 +44,6 @@ class HysteriaSettingsActivity : ProfileSettingsActivity<HysteriaBean>() {
         obfuscation = DataStore.serverObfs
         authPayloadType = DataStore.serverAuthType
         authPayload = DataStore.serverPassword
-        protocol = DataStore.serverProtocolInt
         sni = DataStore.serverSNI
         alpn = DataStore.serverALPN
         caText = DataStore.serverCertificates
@@ -72,7 +70,6 @@ class HysteriaSettingsActivity : ProfileSettingsActivity<HysteriaBean>() {
             true
         }
 
-        val protocol = findPreference<SimpleMenuPreference>(Key.SERVER_PROTOCOL)!!
         val alpn = findPreference<EditTextPreference>(Key.SERVER_ALPN)!!
 
         fun updateVersion(v: Int) {
@@ -80,7 +77,6 @@ class HysteriaSettingsActivity : ProfileSettingsActivity<HysteriaBean>() {
                 authPayload.isVisible = true
                 //
                 authType.isVisible = false
-                protocol.isVisible = false
                 alpn.isVisible = false
                 //
                 findPreference<EditTextPreference>(Key.SERVER_STREAM_RECEIVE_WINDOW)!!.isVisible =
@@ -94,7 +90,6 @@ class HysteriaSettingsActivity : ProfileSettingsActivity<HysteriaBean>() {
             } else {
                 authType.isVisible = true
                 authPayload.isVisible = true
-                protocol.isVisible = true
                 alpn.isVisible = true
                 //
                 findPreference<EditTextPreference>(Key.SERVER_STREAM_RECEIVE_WINDOW)!!.isVisible =

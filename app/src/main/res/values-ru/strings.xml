@@ -9,7 +9,6 @@
 <string name="abc_toolbar_collapse_description">Свернуть</string>
 <string name="acquire_wake_lock">Использовать WakeLock</string>
 <string name="acquire_wake_lock_summary">Сохранять CPU включенным</string>
-<string name="action_download">СКАЧАТЬ</string>
 <string name="action_export">Экспортировать</string>
 <string name="action_export_clipboard">Экспорт в буфер обмена</string>
 <string name="action_export_err">Не удалось экспортировать.</string>
@@ -19,7 +18,6 @@
 <string name="action_import_err">Не удалось импортировать.</string>
 <string name="action_import_file">Импортировать из файла</string>
 <string name="action_import_msg">Успешно импортировано!</string>
-<string name="action_learn_more">УЗНАТЬ БОЛЬШЕ</string>
 <string name="action_switch">Переключить</string>
 <string name="add_profile">Добавить профиль</string>
 <string name="add_profile_methods_manual_settings">Ручные настройки</string>
@@ -142,7 +140,6 @@
 <string name="domain_strategy_for_server">Правило домена для Адреса сервера</string>
 <string name="donate">Пожертвовать</string>
 <string name="donate_info">Я люблю деньги</string>
-<string name="download">Скачать</string>
 <string name="early_data_header_name">Имя заголовка ранних данных</string>
 <string name="ech_config">Конфигурация ECH</string>
 <string name="edit">Редактировать</string>
@@ -233,8 +230,6 @@
 <string name="ignore_battery_optimizations_sum">Снять некоторые ограничения</string>
 <string name="inbound_settings">Входящие настройки</string>
 <string name="insecure">Ненадежный</string>
-<string name="install_from_fdroid">Установить с F-Droid</string>
-<string name="install_from_play_store">Установить из Play Store</string>
 <string name="invalid_backup_file">Недействительный файл резервной копии</string>
 <string name="invalid_server">Неверное имя сервера</string>
 <string name="invert_selections">Инвертировать выбранное</string>
@@ -263,7 +258,6 @@
 <string name="metered">Подсказка о соединении с лимитным тарифным планом</string>
 <string name="metered_summary">Подсказывать системе, что VPN следует рассматривать как сеть с лимитным тарифным планом</string>
 <string name="minimize">Свернуть</string>
-<string name="missing_plugin">Отсутствующий плагин</string>
 <string name="move">Переместить</string>
 <string name="mtrl_badge_numberless_content_description">Новое уведомление</string>
 <string name="mtrl_checkbox_state_description_checked">Флажок установлен.</string>
@@ -320,12 +314,9 @@
 <string name="password_opt">Пароль (необязательно)</string>
 <string name="password_toggle_content_description">Показать пароль</string>
 <string name="plugin">Плагин</string>
-<string name="plugin_auto_connect_unlock_only">Этот плагин может не работать с автоподключением</string>
 <string name="plugin_configure">Настроить…</string>
 <string name="plugin_disabled">Отключено</string>
 <string name="plugin_exists_but_on_shit_system">Профиль %s требует плагин %s, но поставщик вашего проприетарного оборудования (обычно это большие компании, занимающиеся слежкой и производители вредоносного ПО) изменил ваш Android, сделав плагин непригодным для использования.</string>
-<string name="plugin_unknown">Неизвестный плагин %s</string>
-<string name="plugin_untrusted">Предупреждение: похоже, что этот плагин не из известного надежного источника.</string>
 <string name="port_http">Порт прокси HTTP</string>
 <string name="port_local_dns">Локальный порт DNS</string>
 <string name="port_proxy">Порт прокси SOCKS5</string>
@@ -338,7 +329,6 @@
 <string name="profile_import">Импортировать профиль</string>
 <string name="profile_import_message">Подтвердите, что хотите импортировать профиль %s?</string>
 <string name="profile_name">Имя профиля</string>
-<string name="profile_requiring_plugin">Профиль %s требует установки подключаемого модуля %s, но он не найден.</string>
 <string name="profile_traffic_statistics">Статистика трафика профиля</string>
 <string name="profile_traffic_statistics_summary">Когда отключено, использованный трафик не будет отображаться</string>
 <string name="project">Проект</string>

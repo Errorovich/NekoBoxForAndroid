@@ -232,7 +232,6 @@
     <string name="action_shadowsocks" translatable="false">Shadowsocks</string>
     <string name="action_vmess" translatable="false">VMess</string>
     <string name="action_trojan" translatable="false">Trojan</string>
-    <string name="action_trojan_go" translatable="false">Trojan Go</string>
     <string name="action_mieru" translatable="false">Mieru</string>
     <string name="action_naive" translatable="false">Naïve</string>
     <string name="action_anytls" translatable="false">AnyTLS</string>
@@ -308,10 +307,6 @@
     <string name="plugin">Plugin</string>
     <string name="plugin_configure">Configure…</string>
     <string name="plugin_disabled">Disabled</string>
-    <string name="plugin_unknown">Unknown plugin %s</string>
-    <string name="plugin_untrusted">Warning: This plugin does not seem to come from a known trusted
-        source.</string>
-    <string name="plugin_auto_connect_unlock_only">This plugin might not work with Auto Connect</string>
     <string name="proxy_cat">Server Settings</string>
     <string name="ss_cat">Shadowsocks Settings</string>
     <string name="unsaved_changes_prompt">Changes not saved. Do you want to save?</string>
@@ -390,14 +385,6 @@
     <string name="update_when_connected_only_sum">Prevent IP address leakage</string>
     <string name="subscription_user_agent">UserAgent</string>
     <string name="confirm">Confirm</string>
-    <string name="missing_plugin">Missing Plugin</string>
-    <string name="profile_requiring_plugin">Profile %s requires the %s plugin to be installed, but
-        it was not found.</string>
-    <string name="action_learn_more">LEARN MORE</string>
-    <string name="action_download">DOWNLOAD</string>
-    <string name="install_from_play_store">Install from Play Store</string>
-    <string name="install_from_fdroid">Install from F-Droid</string>
-    <string name="download">Download</string>
     <string name="ooc_subscription_token" translatable="false">OOCv1 API Token</string>
     <string name="ooc_subscription_token_invalid">Invalid OOCv1 Token</string>
     <string name="update_subscription_warning">Proxy is not connected, are you sure you want to

@@ -195,13 +195,6 @@
     <string name="ooc_warning">Uyarı</string>
     <string name="update_subscription_warning">Vekil sunucu bağlanmadı, güncellemeye devam etmek istediğinize emin misiniz\?</string>
     <string name="ooc_subscription_token_invalid">OOCv1 Anahtarı Geçersiz</string>
-    <string name="download">İndir</string>
-    <string name="install_from_fdroid">F-Droid\'den Kur</string>
-    <string name="install_from_play_store">Play Store\'dan Kur</string>
-    <string name="action_download">İNDİR</string>
-    <string name="action_learn_more">DAHA FAZLASINI ÖĞREN</string>
-    <string name="profile_requiring_plugin">Profil %s %s eklentisinin kurulmasını gerektirir ama kurulu değil.</string>
-    <string name="missing_plugin">Eksik Eklenti</string>
     <string name="confirm">Doğrula</string>
     <string name="subscription_user_agent">Kullanıcı Kimliği</string>
     <string name="update_when_connected_only_sum">IP adresinin sızdırılmasını önle</string>
@@ -255,9 +248,6 @@
     <string name="unsaved_changes_prompt">Değişiklikler kaydedilmedi. Kaydetmek ister misiniz\?</string>
     <string name="ss_cat">Shadowsocks Ayarları</string>
     <string name="proxy_cat">Sunucu Ayarları</string>
-    <string name="plugin_auto_connect_unlock_only">Bu eklenti Otomatik Bağlan ile çalışmayabilir</string>
-    <string name="plugin_untrusted">Uyarı: Bu eklenti bilinen güvenilir bir kaynaktan geliyora benzemiyor.</string>
-    <string name="plugin_unknown">Bilinmeyen eklenti %s</string>
     <string name="plugin_disabled">Devre Dışı</string>
     <string name="plugin">Eklenti</string>
     <string name="ignore_battery_optimizations_sum">Bazı kısıtlamaları kaldır</string>

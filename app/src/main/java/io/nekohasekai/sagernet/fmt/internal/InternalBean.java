@@ -18,9 +18,4 @@ public abstract class InternalBean extends AbstractBean {
     public boolean canTCPing() {
         return false;
     }
-
-    @Override
-    public boolean canMapping() {
-        return false;
-    }
 }

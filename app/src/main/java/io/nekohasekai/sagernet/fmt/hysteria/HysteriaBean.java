@@ -41,16 +41,6 @@ public class HysteriaBean extends AbstractBean {
     public static final int TYPE_BASE64 = 2;
     public Integer authPayloadType;
 
-    public static final int PROTOCOL_UDP = 0;
-    public static final int PROTOCOL_FAKETCP = 1;
-    public static final int PROTOCOL_WECHAT_VIDEO = 2;
-    public Integer protocol;
-
-    @Override
-    public boolean canMapping() {
-        return protocol != PROTOCOL_FAKETCP;
-    }
-
     @Override
     public void initializeDefaultValues() {
         super.initializeDefaultValues();
@@ -58,7 +48,6 @@ public class HysteriaBean extends AbstractBean {
 
         if (authPayloadType == null) authPayloadType = TYPE_NONE;
         if (authPayload == null) authPayload = "";
-        if (protocol == null) protocol = PROTOCOL_UDP;
         if (obfuscation == null) obfuscation = "";
         if (sni == null) sni = "";
         if (alpn == null) alpn = "";
@@ -82,14 +71,13 @@ public class HysteriaBean extends AbstractBean {
 
     @Override
     public void serialize(ByteBufferOutput output) {
-        output.writeInt(7);
+        output.writeInt(8);
         super.serialize(output);
 
         output.writeInt(protocolVersion);
 
         output.writeInt(authPayloadType);
         output.writeString(authPayload);
-        output.writeInt(protocol);
         output.writeString(obfuscation);
         output.writeString(sni);
         output.writeString(alpn);
@@ -117,8 +105,10 @@ public class HysteriaBean extends AbstractBean {
         }
         authPayloadType = input.readInt();
         authPayload = input.readString();
-        if (version >= 3) {
-            protocol = input.readInt();
+        if (version >= 3 && version < 8) {
+            // Hysteria 1's faketcp/wechat-video obfuscation, dropped together
+            // with external plugin support: the core only speaks plain UDP.
+            input.readInt();
         }
         obfuscation = input.readString();
         sni = input.readString();

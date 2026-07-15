@@ -8,7 +8,6 @@ import io.nekohasekai.sagernet.database.ProxyEntity
 import io.nekohasekai.sagernet.database.ProxyEntity.Companion.TYPE_CONFIG
 import io.nekohasekai.sagernet.database.ProxyGroup
 import io.nekohasekai.sagernet.database.SagerDatabase
-import io.nekohasekai.sagernet.fmt.ConfigBuildResult.IndexEntity
 import io.nekohasekai.sagernet.fmt.hysteria.HysteriaBean
 import io.nekohasekai.sagernet.fmt.hysteria.buildSingBoxOutboundHysteriaBean
 import io.nekohasekai.sagernet.fmt.internal.ChainBean
@@ -37,7 +36,6 @@ import io.nekohasekai.sagernet.ktx.mkPort
 import io.nekohasekai.sagernet.utils.PackageCache
 import moe.matsuri.nb4a.*
 import moe.matsuri.nb4a.SingBoxOptions.*
-import moe.matsuri.nb4a.plugin.Plugins
 import moe.matsuri.nb4a.proxy.anytls.AnyTLSBean
 import moe.matsuri.nb4a.proxy.anytls.buildSingBoxOutboundAnyTLSBean
 import moe.matsuri.nb4a.proxy.config.ConfigBean
@@ -61,14 +59,11 @@ const val LOCALHOST = "127.0.0.1"
 
 class ConfigBuildResult(
     var config: String,
-    var externalIndex: List<IndexEntity>,
     var mainEntId: Long,
     var trafficMap: Map<String, List<ProxyEntity>>,
     var profileTagMap: Map<Long, String>,
     val selectorGroupId: Long,
-) {
-    data class IndexEntity(var chain: LinkedHashMap<Int, ProxyEntity>)
-}
+)
 
 private fun sanitizeDnsEntry(value: String): String {
     return value.filterNot { it.isISOControl() }.trim()
@@ -115,7 +110,6 @@ fun buildConfig(
             val tagProxy = proxy.displayName()
             return ConfigBuildResult(
                 bean.config,
-                listOf(),
                 proxy.id, //
                 mapOf(tagProxy to listOf(proxy)), //
                 mapOf(proxy.id to tagProxy), //
@@ -194,7 +188,6 @@ fun buildConfig(
     val useFakeDns = DataStore.enableFakeDns && !forTest
     val needSniff = DataStore.trafficSniffing > 0
     val needSniffOverride = DataStore.trafficSniffing == 2
-    val externalIndexMap = ArrayList<IndexEntity>()
     val ipv6Mode = if (forTest) IPv6Mode.ENABLE else DataStore.ipv6Mode
 
     fun genDomainStrategy(noAsIs: Boolean): String {
@@ -328,10 +321,7 @@ fun buildConfig(
 
             var currentOutbound: SingBoxOption
             lateinit var pastOutbound: SingBoxOption
-            lateinit var pastInboundTag: String
             var pastEntity: ProxyEntity? = null
-            val externalChainMap = LinkedHashMap<Int, ProxyEntity>()
-            externalIndexMap.add(IndexEntity(externalChainMap))
             val chainOutbounds = ArrayList<SingBoxOption>()
 
             // chainTagOut: v2ray outbound tag for this chain
@@ -403,15 +393,8 @@ fun buildConfig(
 
                 // chain rules
                 if (index > 0) {
-                    // chain route/proxy rules
-                    if (pastEntity!!.needExternal()) {
-                        route.rules.add(Rule_DefaultOptions().apply {
-                            inbound = listOf(pastInboundTag)
-                            outbound = tagOut
-                        })
-                    } else {
-                        pastOutbound._hack_config_map["detour"] = tagOut
-                    }
+                    // every hop is an in-core outbound, so chain them by detour
+                    pastOutbound._hack_config_map["detour"] = tagOut
                 } else {
                     // index == 0 means last profile in chain / not chain
                     chainTagOut = tagOut
@@ -426,84 +409,71 @@ fun buildConfig(
                     globalOutbounds[proxyEntity.id] = tagOut
                 }
 
-                if (proxyEntity.needExternal()) { // externel outbound
-                    val localPort = mkPort()
-                    externalChainMap[localPort] = proxyEntity
-                    currentOutbound = Outbound_SocksOptions().apply {
-                        type = "socks"
-                        server = LOCALHOST
-                        server_port = localPort
-                    }
-                } else {
-                    // internal outbound
+                currentIsEndpoint = bean is WireGuardBean ||
+                    (bean is ConfigBean && bean.type == 2)
 
-                    currentIsEndpoint = bean is WireGuardBean ||
-                        (bean is ConfigBean && bean.type == 2)
+                currentOutbound = when (bean) {
+                    is ConfigBean -> CustomSingBoxOption(bean.config) as SingBoxOption
 
-                    currentOutbound = when (bean) {
-                        is ConfigBean -> CustomSingBoxOption(bean.config) as SingBoxOption
+                    is ShadowTLSBean -> // before StandardV2RayBean
+                        buildSingBoxOutboundShadowTLSBean(bean)
 
-                        is ShadowTLSBean -> // before StandardV2RayBean
-                            buildSingBoxOutboundShadowTLSBean(bean)
+                    is StandardV2RayBean -> // http/trojan/vmess/vless
+                        buildSingBoxOutboundStandardV2RayBean(bean)
 
-                        is StandardV2RayBean -> // http/trojan/vmess/vless
-                            buildSingBoxOutboundStandardV2RayBean(bean)
+                    is HysteriaBean ->
+                        buildSingBoxOutboundHysteriaBean(bean)
 
-                        is HysteriaBean ->
-                            buildSingBoxOutboundHysteriaBean(bean)
+                    is TuicBean ->
+                        buildSingBoxOutboundTuicBean(bean)
 
-                        is TuicBean ->
-                            buildSingBoxOutboundTuicBean(bean)
+                    is JuicityBean ->
+                        buildSingBoxOutboundJuicityBean(bean)
 
-                        is JuicityBean ->
-                            buildSingBoxOutboundJuicityBean(bean)
+                    is SOCKSBean ->
+                        buildSingBoxOutboundSocksBean(bean)
 
-                        is SOCKSBean ->
-                            buildSingBoxOutboundSocksBean(bean)
+                    is ShadowsocksBean ->
+                        buildSingBoxOutboundShadowsocksBean(bean)
 
-                        is ShadowsocksBean ->
-                            buildSingBoxOutboundShadowsocksBean(bean)
+                    is WireGuardBean ->
+                        buildSingBoxEndpointWireguardBean(bean)
 
-                        is WireGuardBean ->
-                            buildSingBoxEndpointWireguardBean(bean)
+                    is SSHBean ->
+                        buildSingBoxOutboundSSHBean(bean)
 
-                        is SSHBean ->
-                            buildSingBoxOutboundSSHBean(bean)
+                    is AnyTLSBean ->
+                        buildSingBoxOutboundAnyTLSBean(bean)
 
-                        is AnyTLSBean ->
-                            buildSingBoxOutboundAnyTLSBean(bean)
+                    is SnellBean ->
+                        buildSingBoxOutboundSnellBean(bean)
 
-                        is SnellBean ->
-                            buildSingBoxOutboundSnellBean(bean)
+                    is MieruBean ->
+                        buildSingBoxOutboundMieruBean(bean)
 
-                        is MieruBean ->
-                            buildSingBoxOutboundMieruBean(bean)
+                    is NaiveBean ->
+                        buildSingBoxOutboundNaiveBean(bean)
 
-                        is NaiveBean ->
-                            buildSingBoxOutboundNaiveBean(bean)
+                    else -> throw IllegalStateException("can't reach")
+                }
 
-                        else -> throw IllegalStateException("can't reach")
-                    }
-
-                    // internal mux
-                    if (!muxApplied) {
-                        val muxObj = proxyEntity.singMux()
-                        if (muxObj != null && muxObj.enabled) {
-                            muxApplied = true
-                            currentOutbound._hack_config_map["multiplex"] = muxObj.asMap()
-                        }
-                    }
-
-                    if (needGlobal && DataStore.enableTLSFragment) {
-                        val outboundMap = currentOutbound.asMap()
-                        val tlsOptions = outboundMap["tls"] as? Map<*, *>
-                        if (tlsOptions?.get("enabled") == true) {
-                            currentOutbound._hack_config_map["detour"] = TAG_FRAGMENT
-                        }
+                // internal mux
+                if (!muxApplied) {
+                    val muxObj = proxyEntity.singMux()
+                    if (muxObj != null && muxObj.enabled) {
+                        muxApplied = true
+                        currentOutbound._hack_config_map["multiplex"] = muxObj.asMap()
                     }
                 }
 
-                // internal & external
+                if (needGlobal && DataStore.enableTLSFragment) {
+                    val outboundMap = currentOutbound.asMap()
+                    val tlsOptions = outboundMap["tls"] as? Map<*, *>
+                    if (tlsOptions?.get("enabled") == true) {
+                        currentOutbound._hack_config_map["detour"] = TAG_FRAGMENT
+                    }
+                }
+
                 currentOutbound.apply {
                     // udp over tcp
                     try {
@@ -529,58 +499,10 @@ fun buildConfig(
                     _hack_custom_config = bean.customOutboundJson
                 }
 
-                // External proxy need a dokodemo-door inbound to forward the traffic
-                // For external proxy software, their traffic must goes to v2ray-core to use protected fd.
+                // Every protocol is served by the core in-process, so a profile
+                // always dials its own server directly.
                 bean.finalAddress = bean.serverAddress
                 bean.finalPort = bean.serverPort
-                if (bean.canMapping() && proxyEntity.needExternal()) {
-                    // With ss protect, don't use mapping
-                    var needExternal = true
-                    if (index == profileList.lastIndex) {
-                        val pluginId = when (bean) {
-                            is HysteriaBean -> if (bean.protocolVersion == 1) "hysteria-plugin" else "hysteria2-plugin"
-                            else -> ""
-                        }
-                        if (Plugins.isUsingMatsuriExe(pluginId)) {
-                            needExternal = false
-                        } else if (Plugins.getPluginExternal(pluginId) != null) {
-                            throw Exception("You are using an unsupported $pluginId, please download the correct plugin.")
-                        }
-                    }
-                    if (needExternal) {
-                        val mappingPort = mkPort()
-                        bean.finalAddress = LOCALHOST
-                        bean.finalPort = mappingPort
-
-                        inbounds.add(Inbound_DirectOptions().apply {
-                            type = "direct"
-                            listen = LOCALHOST
-                            listen_port = mappingPort
-                            tag = "$chainTag-mapping-${proxyEntity.id}"
-
-                            override_address = bean.serverAddress
-                            override_port = bean.serverPort
-
-                            pastInboundTag = tag
-
-                            // no chain rule and not outbound, so need to set to direct
-                            if (index == profileList.lastIndex) {
-                                if (DataStore.enableTLSFragment) {
-                                    route.rules.add(Rule_DefaultOptions().apply {
-                                        network = listOf("tcp")
-                                        inbound = listOf(tag)
-                                        outbound = TAG_FRAGMENT
-                                    })
-                                }
-
-                                route.rules.add(Rule_DefaultOptions().apply {
-                                    inbound = listOf(tag)
-                                    outbound = TAG_DIRECT
-                                })
-                            }
-                        })
-                    }
-                }
 
                 if (currentIsEndpoint) {
                     endpoints.add(currentOutbound)
@@ -1055,7 +977,6 @@ fun buildConfig(
         Util.mergeJSON(configMap, proxy.requireBean().customConfigJson)
         ConfigBuildResult(
             gson.toJson(configMap),
-            externalIndexMap,
             proxy.id,
             trafficMap,
             tagMap,

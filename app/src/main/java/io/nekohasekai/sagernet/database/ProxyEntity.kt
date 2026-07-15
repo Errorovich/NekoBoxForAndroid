@@ -24,9 +24,6 @@ import io.nekohasekai.sagernet.fmt.socks.SOCKSBean
 import io.nekohasekai.sagernet.fmt.socks.toUri
 import io.nekohasekai.sagernet.fmt.ssh.SSHBean
 import io.nekohasekai.sagernet.fmt.trojan.TrojanBean
-import io.nekohasekai.sagernet.fmt.trojan_go.TrojanGoBean
-import io.nekohasekai.sagernet.fmt.trojan_go.buildTrojanGoConfig
-import io.nekohasekai.sagernet.fmt.trojan_go.toUri
 import io.nekohasekai.sagernet.fmt.tuic.TuicBean
 import io.nekohasekai.sagernet.fmt.tuic.toUri
 import io.nekohasekai.sagernet.fmt.juicity.JuicityBean
@@ -42,7 +39,6 @@ import moe.matsuri.nb4a.proxy.anytls.AnyTLSSettingsActivity
 import moe.matsuri.nb4a.proxy.anytls.toUri
 import moe.matsuri.nb4a.proxy.config.ConfigBean
 import moe.matsuri.nb4a.proxy.config.ConfigSettingActivity
-import moe.matsuri.nb4a.proxy.neko.*
 import moe.matsuri.nb4a.proxy.shadowtls.ShadowTLSSettingsActivity
 
 @Entity(
@@ -64,7 +60,6 @@ data class ProxyEntity(
     var ssBean: ShadowsocksBean? = null,
     var vmessBean: VMessBean? = null,
     var trojanBean: TrojanBean? = null,
-    var trojanGoBean: TrojanGoBean? = null,
     var mieruBean: MieruBean? = null,
     var naiveBean: NaiveBean? = null,
     var hysteriaBean: HysteriaBean? = null,
@@ -75,7 +70,6 @@ data class ProxyEntity(
     var shadowTLSBean: ShadowTLSBean? = null,
     var anyTLSBean: AnyTLSBean? = null,
     var chainBean: ChainBean? = null,
-    var nekoBean: NekoBean? = null,
     var configBean: ConfigBean? = null,
     var snellBean: SnellBean? = null,
 ) : Serializable() {
@@ -90,7 +84,6 @@ data class ProxyEntity(
         const val TYPE_SSH = 17
         const val TYPE_WG = 18
 
-        const val TYPE_TROJAN_GO = 7
         const val TYPE_NAIVE = 9
         const val TYPE_HYSTERIA = 15
         const val TYPE_SHADOWTLS = 19
@@ -101,7 +94,6 @@ data class ProxyEntity(
         const val TYPE_SNELL = 24
 
         const val TYPE_CONFIG = 998
-        const val TYPE_NEKO = 999
 
         const val TYPE_CHAIN = 8
 
@@ -174,7 +166,6 @@ data class ProxyEntity(
             TYPE_SS -> ssBean = KryoConverters.shadowsocksDeserialize(byteArray)
             TYPE_VMESS -> vmessBean = KryoConverters.vmessDeserialize(byteArray)
             TYPE_TROJAN -> trojanBean = KryoConverters.trojanDeserialize(byteArray)
-            TYPE_TROJAN_GO -> trojanGoBean = KryoConverters.trojanGoDeserialize(byteArray)
             TYPE_MIERU -> mieruBean = KryoConverters.mieruDeserialize(byteArray)
             TYPE_NAIVE -> naiveBean = KryoConverters.naiveDeserialize(byteArray)
             TYPE_HYSTERIA -> hysteriaBean = KryoConverters.hysteriaDeserialize(byteArray)
@@ -185,7 +176,6 @@ data class ProxyEntity(
             TYPE_SHADOWTLS -> shadowTLSBean = KryoConverters.shadowTLSDeserialize(byteArray)
             TYPE_ANYTLS -> anyTLSBean = KryoConverters.anyTLSDeserialize(byteArray)
             TYPE_CHAIN -> chainBean = KryoConverters.chainDeserialize(byteArray)
-            TYPE_NEKO -> nekoBean = KryoConverters.nekoDeserialize(byteArray)
             TYPE_CONFIG -> configBean = KryoConverters.configDeserialize(byteArray)
             TYPE_SNELL -> snellBean = KryoConverters.snellDeserialize(byteArray)
         }
@@ -197,7 +187,6 @@ data class ProxyEntity(
         TYPE_SS -> "Shadowsocks"
         TYPE_VMESS -> if (vmessBean!!.isVLESS) "VLESS" else "VMess"
         TYPE_TROJAN -> "Trojan"
-        TYPE_TROJAN_GO -> "Trojan-Go"
         TYPE_MIERU -> "Mieru"
         TYPE_NAIVE -> "Naïve"
         TYPE_HYSTERIA -> "Hysteria" + hysteriaBean!!.protocolVersion
@@ -208,7 +197,6 @@ data class ProxyEntity(
         TYPE_SHADOWTLS -> "ShadowTLS"
         TYPE_ANYTLS -> "AnyTLS"
         TYPE_CHAIN -> chainName
-        TYPE_NEKO -> nekoBean!!.displayType()
         TYPE_CONFIG -> configBean!!.displayType()
         TYPE_SNELL -> "Snell"
         else -> "Undefined type $type"
@@ -224,7 +212,6 @@ data class ProxyEntity(
             TYPE_SS -> ssBean
             TYPE_VMESS -> vmessBean
             TYPE_TROJAN -> trojanBean
-            TYPE_TROJAN_GO -> trojanGoBean
             TYPE_MIERU -> mieruBean
             TYPE_NAIVE -> naiveBean
             TYPE_HYSTERIA -> hysteriaBean
@@ -235,7 +222,6 @@ data class ProxyEntity(
             TYPE_SHADOWTLS -> shadowTLSBean
             TYPE_ANYTLS -> anyTLSBean
             TYPE_CHAIN -> chainBean
-            TYPE_NEKO -> nekoBean
             TYPE_CONFIG -> configBean
             TYPE_SNELL -> snellBean
             else -> error("Undefined type $type")
@@ -254,7 +240,6 @@ data class ProxyEntity(
             is SSHBean -> false
             is WireGuardBean -> false
             is ShadowTLSBean -> false
-            is NekoBean -> false
             is ConfigBean -> false
             else -> true
         }
@@ -267,68 +252,19 @@ data class ProxyEntity(
             is ShadowsocksBean -> toUri()
             is VMessBean -> toUriVMessVLESSTrojan(false)
             is TrojanBean -> toUriVMessVLESSTrojan(true)
-            is TrojanGoBean -> toUri()
             is NaiveBean -> toUri()
             is HysteriaBean -> toUri()
             is TuicBean -> toUri()
             is JuicityBean -> toUri()
             is AnyTLSBean -> toUri()
             is SnellBean -> toUri()
-            is NekoBean -> ""
             else -> toUniversalLink()
         }
     }
 
     fun exportConfig(): Pair<String, String> {
-        var name = "${requireBean().displayName()}.json"
-
-        return with(requireBean()) {
-            StringBuilder().apply {
-                val config = buildConfig(this@ProxyEntity, forExport = true)
-                append(config.config)
-
-                if (!config.externalIndex.all { it.chain.isEmpty() }) {
-                    name = "profiles.txt"
-                }
-
-                for ((chain) in config.externalIndex) {
-                    chain.entries.forEachIndexed { index, (port, profile) ->
-                        when (val bean = profile.requireBean()) {
-                            is TrojanGoBean -> {
-                                append("\n\n")
-                                append(bean.buildTrojanGoConfig(port))
-                            }
-
-                            is MieruBean -> {
-                                append("\n\n")
-                                append(bean.buildMieruConfig(port))
-                            }
-
-                            is NaiveBean -> {
-                                append("\n\n")
-                                append(bean.buildNaiveConfig(port))
-                            }
-
-                            is HysteriaBean -> {
-                                append("\n\n")
-                                append(bean.buildHysteria1Config(port, null))
-                            }
-                        }
-                    }
-                }
-            }.toString()
-        } to name
-    }
-
-    fun needExternal(): Boolean {
-        return when (type) {
-            TYPE_TROJAN_GO -> true
-            // mieru & naive are now handled by the built-in core
-            // (buildSingBoxOutboundMieruBean / buildSingBoxOutboundNaiveBean)
-            TYPE_HYSTERIA -> !hysteriaBean!!.canUseSingBox()
-            TYPE_NEKO -> true
-            else -> false
-        }
+        val name = "${requireBean().displayName()}.json"
+        return buildConfig(this, forExport = true).config to name
     }
 
     fun singMux(): MultiplexOptions? {
@@ -415,7 +351,6 @@ data class ProxyEntity(
         ssBean = null
         vmessBean = null
         trojanBean = null
-        trojanGoBean = null
         mieruBean = null
         naiveBean = null
         hysteriaBean = null
@@ -427,7 +362,6 @@ data class ProxyEntity(
         anyTLSBean = null
         chainBean = null
         configBean = null
-        nekoBean = null
 
         when (bean) {
             is SOCKSBean -> {
@@ -453,11 +387,6 @@ data class ProxyEntity(
             is TrojanBean -> {
                 type = TYPE_TROJAN
                 trojanBean = bean
-            }
-
-            is TrojanGoBean -> {
-                type = TYPE_TROJAN_GO
-                trojanGoBean = bean
             }
 
             is MieruBean -> {
@@ -515,11 +444,6 @@ data class ProxyEntity(
                 chainBean = bean
             }
 
-            is NekoBean -> {
-                type = TYPE_NEKO
-                nekoBean = bean
-            }
-
             is ConfigBean -> {
                 type = TYPE_CONFIG
                 configBean = bean
@@ -538,7 +462,6 @@ data class ProxyEntity(
                 TYPE_SS -> ShadowsocksSettingsActivity::class.java
                 TYPE_VMESS -> VMessSettingsActivity::class.java
                 TYPE_TROJAN -> TrojanSettingsActivity::class.java
-                TYPE_TROJAN_GO -> TrojanGoSettingsActivity::class.java
                 TYPE_MIERU -> MieruSettingsActivity::class.java
                 TYPE_NAIVE -> NaiveSettingsActivity::class.java
                 TYPE_HYSTERIA -> HysteriaSettingsActivity::class.java

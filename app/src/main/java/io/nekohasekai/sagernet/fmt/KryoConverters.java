@@ -22,7 +22,6 @@ import io.nekohasekai.sagernet.fmt.snell.SnellBean;
 import io.nekohasekai.sagernet.fmt.socks.SOCKSBean;
 import io.nekohasekai.sagernet.fmt.ssh.SSHBean;
 import io.nekohasekai.sagernet.fmt.trojan.TrojanBean;
-import io.nekohasekai.sagernet.fmt.trojan_go.TrojanGoBean;
 import io.nekohasekai.sagernet.fmt.tuic.TuicBean;
 import io.nekohasekai.sagernet.fmt.juicity.JuicityBean;
 import io.nekohasekai.sagernet.fmt.v2ray.VMessBean;
@@ -30,7 +29,6 @@ import io.nekohasekai.sagernet.fmt.wireguard.WireGuardBean;
 import io.nekohasekai.sagernet.ktx.KryosKt;
 import io.nekohasekai.sagernet.ktx.Logs;
 import moe.matsuri.nb4a.proxy.config.ConfigBean;
-import moe.matsuri.nb4a.proxy.neko.NekoBean;
 import moe.matsuri.nb4a.utils.JavaUtil;
 
 public class KryoConverters {
@@ -98,12 +96,6 @@ public class KryoConverters {
     }
 
     @TypeConverter
-    public static TrojanGoBean trojanGoDeserialize(byte[] bytes) {
-        if (JavaUtil.isEmpty(bytes)) return null;
-        return deserialize(new TrojanGoBean(), bytes);
-    }
-
-    @TypeConverter
     public static MieruBean mieruDeserialize(byte[] bytes) {
         if (JavaUtil.isEmpty(bytes)) return null;
         return deserialize(new MieruBean(), bytes);
@@ -167,12 +159,6 @@ public class KryoConverters {
     public static ChainBean chainDeserialize(byte[] bytes) {
         if (JavaUtil.isEmpty(bytes)) return null;
         return deserialize(new ChainBean(), bytes);
-    }
-
-    @TypeConverter
-    public static NekoBean nekoDeserialize(byte[] bytes) {
-        if (JavaUtil.isEmpty(bytes)) return null;
-        return deserialize(new NekoBean(), bytes);
     }
 
     @TypeConverter

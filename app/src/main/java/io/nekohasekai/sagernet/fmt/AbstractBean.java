@@ -52,10 +52,6 @@ public abstract class AbstractBean extends Serializable {
         return true;
     }
 
-    public boolean canMapping() {
-        return true;
-    }
-
     @Override
     public void initializeDefaultValues() {
         if (JavaUtil.isNullOrBlank(serverAddress)) {

@@ -4,11 +4,6 @@
     <string name="select_apps">Velg programmer</string>
     <string name="apps">Programmer</string>
     <string name="ooc_warning">Advarsel</string>
-    <string name="download">Last ned</string>
-    <string name="install_from_fdroid">Installer fra F-Droid</string>
-    <string name="install_from_play_store">Installer fra Play-butikken</string>
-    <string name="action_download">Last ned</string>
-    <string name="action_learn_more">Lær mer</string>
     <string name="confirm">Bekreft</string>
     <string name="connection_test_timeout_error">Tidsavbrudd</string>
     <string name="connection_test_clear_results">Tøm testresultater</string>
@@ -120,8 +115,6 @@
     <string name="ooc_missing_protocol">Abonnementet krever støtte for protokoll %s, men det kan ikke bli funnet. Profiler som ikke støttes, blir ignorert.</string>
     <string name="update_subscription_warning">Proxy er ikke tilkoblet. Er du sikker på at du vil fortsette å oppdatere\?</string>
     <string name="ooc_subscription_token_invalid">Ugyldig OOCv1 -token</string>
-    <string name="profile_requiring_plugin">Profil %s krever at %s plugin er installert, men det ble ikke funnet.</string>
-    <string name="missing_plugin">Plugin mangler</string>
     <string name="subscription_user_agent">Bruker agent</string>
     <string name="update_when_connected_only_sum">Forhindre lekkasje av IP -adresse</string>
     <string name="update_when_connected_only">Oppdater bare når den er tilkoblet</string>
@@ -164,9 +157,6 @@
     <string name="need_reload">Last inn proxy -tjenesten på nytt for å bruke endringer</string>
     <string name="unsaved_changes_prompt">Endringene er ikke lagret. Vil du spare\?</string>
     <string name="ss_cat">Innstillinger for Shadowsocks</string>
-    <string name="plugin_auto_connect_unlock_only">Denne pluginen fungerer kanskje ikke med Auto Connect</string>
-    <string name="plugin_untrusted">Advarsel: Det ser ikke ut til at denne pluginen kommer fra en kjent klarert kilde.</string>
-    <string name="plugin_unknown">Ukjent plugin %s</string>
     <string name="plugin_disabled">Funksjonshemmet</string>
     <string name="plugin">Plugg inn</string>
     <string name="ignore_battery_optimizations">Ignorer batterioptimaliseringer</string>
