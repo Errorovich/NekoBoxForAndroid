@@ -27,6 +27,10 @@ class AnyTLSSettingsActivity : ProfileSettingsActivity<AnyTLSBean>() {
     private val utlsFingerprint = pbm.add(PreferenceBinding(Type.Text, "utlsFingerprint"))
     private val realityPubKey = pbm.add(PreferenceBinding(Type.Text, "realityPubKey"))
     private val realityShortId = pbm.add(PreferenceBinding(Type.Text, "realityShortId"))
+    private val idleSessionCheckInterval =
+        pbm.add(PreferenceBinding(Type.Text, "idleSessionCheckInterval"))
+    private val idleSessionTimeout = pbm.add(PreferenceBinding(Type.Text, "idleSessionTimeout"))
+    private val minIdleSession = pbm.add(PreferenceBinding(Type.TextToInt, "minIdleSession"))
 
     override fun AnyTLSBean.init() {
         pbm.writeToCacheAll(this)
@@ -48,6 +52,9 @@ class AnyTLSSettingsActivity : ProfileSettingsActivity<AnyTLSBean>() {
         }
         findPreference<EditTextPreference>("password")!!.apply {
             summaryProvider = PasswordSummaryProvider
+        }
+        findPreference<EditTextPreference>("minIdleSession")!!.apply {
+            setOnBindEditTextListener(EditTextPreferenceModifiers.Number)
         }
     }
 }

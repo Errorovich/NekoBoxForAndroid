@@ -38,6 +38,13 @@ public class AnyTLSBean extends AbstractBean {
     public String realityPubKey;
     public String realityShortId;
 
+    // Session-pool tuning. The two intervals are duration strings ("30s"); empty
+    // leaves the core on its defaults. minIdleSession keeps that many sessions
+    // warm; 0 means the core default.
+    public String idleSessionCheckInterval;
+    public String idleSessionTimeout;
+    public Integer minIdleSession;
+
     @Override
     public void initializeDefaultValues() {
         super.initializeDefaultValues();
@@ -50,11 +57,14 @@ public class AnyTLSBean extends AbstractBean {
         if (echConfig == null) echConfig = "";
         if (realityPubKey == null) realityPubKey = "";
         if (realityShortId == null) realityShortId = "";
+        if (idleSessionCheckInterval == null) idleSessionCheckInterval = "";
+        if (idleSessionTimeout == null) idleSessionTimeout = "";
+        if (minIdleSession == null) minIdleSession = 0;
     }
 
     @Override
     public void serialize(ByteBufferOutput output) {
-        output.writeInt(1);
+        output.writeInt(2);
         super.serialize(output);
         output.writeString(password);
         output.writeString(sni);
@@ -65,6 +75,9 @@ public class AnyTLSBean extends AbstractBean {
         output.writeString(echConfig);
         output.writeString(realityPubKey);
         output.writeString(realityShortId);
+        output.writeString(idleSessionCheckInterval);
+        output.writeString(idleSessionTimeout);
+        output.writeInt(minIdleSession);
     }
 
     @Override
@@ -84,6 +97,11 @@ public class AnyTLSBean extends AbstractBean {
         } else {
             realityPubKey = "";
             realityShortId = "";
+        }
+        if (version >= 2) {
+            idleSessionCheckInterval = input.readString();
+            idleSessionTimeout = input.readString();
+            minIdleSession = input.readInt();
         }
     }
 

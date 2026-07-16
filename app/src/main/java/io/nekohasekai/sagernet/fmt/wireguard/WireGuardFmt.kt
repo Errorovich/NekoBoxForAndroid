@@ -32,6 +32,9 @@ fun WireGuardBean.toUri(): String {
         builder.addQueryParameter("reserved", reserved.listByLineOrComma().joinToString("-"))
     }
     builder.addQueryParameter("mtu", mtu.toString())
+    if (persistentKeepalive > 0) {
+        builder.addQueryParameter("persistent_keepalive", persistentKeepalive.toString())
+    }
     if (localAddress.isNotBlank()) builder.addQueryParameter("local_address", packAddresses(localAddress))
     if (name.isNotBlank()) builder.encodedFragment(name.urlSafe())
     return builder.toLink("wg")
@@ -91,6 +94,7 @@ private fun parseWg(url: HttpUrl) = WireGuardBean().apply {
     peerPreSharedKey = url.queryParameter("pre_shared_key").orEmpty()
     url.queryParameter("reserved")?.let { reserved = it.replace("-", ",") }
     url.queryParameter("mtu")?.toIntOrNull()?.let { mtu = it }
+    url.queryParameter("persistent_keepalive")?.toIntOrNull()?.let { persistentKeepalive = it }
     url.queryParameter("local_address")?.let { localAddress = unpackAddresses(it) }
 }
 
@@ -163,6 +167,9 @@ fun buildSingBoxEndpointWireguardBean(bean: WireGuardBean): SingBoxOptions.SingB
         }
         if (bean.reserved.isNotBlank()) {
             peer["reserved"] = Util.b64Decode(genReserved(bean.reserved)).map { it.toInt() and 0xff }
+        }
+        if ((bean.persistentKeepalive ?: 0) > 0) {
+            peer["persistent_keepalive_interval"] = bean.persistentKeepalive
         }
         _hack_config_map["peers"] = listOf(peer)
     }

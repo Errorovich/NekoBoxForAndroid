@@ -4224,7 +4224,9 @@ public class SingBoxOptions {
 
         public Boolean zero_rtt_handshake;
 
-        public Long heartbeat;
+        // A badoption.Duration on the core, which unmarshals only from a string
+        // like "10s" -- never a bare number.
+        public String heartbeat;
 
         public String network;
 
@@ -4676,6 +4678,8 @@ public class SingBoxOptions {
         public String idle_session_check_interval;
 
         public String idle_session_timeout;
+
+        public Integer min_idle_session;
 
     }
 

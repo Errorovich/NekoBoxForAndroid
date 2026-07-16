@@ -57,5 +57,20 @@
             app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
 
+    <PreferenceCategory app:title="@string/mieru_advanced_cat">
+        <EditTextPreference
+            app:icon="@drawable/ic_baseline_compare_arrows_24"
+            app:key="serverHostKeyAlgorithms"
+            app:dialogMessage="@string/ssh_host_key_algorithms_sum"
+            app:title="@string/ssh_host_key_algorithms"
+            app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
+            app:icon="@drawable/ic_baseline_fingerprint_24"
+            app:key="serverClientVersion"
+            app:dialogMessage="@string/ssh_client_version_sum"
+            app:title="@string/ssh_client_version"
+            app:useSimpleSummaryProvider="true" />
+    </PreferenceCategory>
+
 
 </PreferenceScreen>

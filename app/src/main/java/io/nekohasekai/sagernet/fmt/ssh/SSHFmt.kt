@@ -42,6 +42,12 @@ fun buildSingBoxOutboundSSHBean(bean: SSHBean): SingBoxOptions.Outbound_SSHOptio
         if (bean.publicKey.isNotBlank()) {
             host_key = bean.publicKey.listByLineOrComma()
         }
+        if (!bean.hostKeyAlgorithms.isNullOrBlank()) {
+            host_key_algorithms = bean.hostKeyAlgorithms.listByLineOrComma()
+        }
+        if (!bean.clientVersion.isNullOrBlank()) {
+            client_version = bean.clientVersion
+        }
         when (bean.authType) {
             SSHBean.AUTH_TYPE_PRIVATE_KEY -> {
                 private_key = bean.privateKey

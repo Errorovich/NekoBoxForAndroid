@@ -24,6 +24,8 @@ class SSHSettingsActivity : ProfileSettingsActivity<SSHBean>() {
         DataStore.serverPrivateKey = privateKey
         DataStore.serverPassword1 = privateKeyPassphrase
         DataStore.serverCertificates = publicKey
+        DataStore.serverHostKeyAlgorithms = hostKeyAlgorithms
+        DataStore.serverClientVersion = clientVersion
     }
 
     override fun SSHBean.serialize() {
@@ -44,6 +46,8 @@ class SSHSettingsActivity : ProfileSettingsActivity<SSHBean>() {
             }
         }
         publicKey = DataStore.serverCertificates
+        hostKeyAlgorithms = DataStore.serverHostKeyAlgorithms
+        clientVersion = DataStore.serverClientVersion
     }
 
     override fun PreferenceFragmentCompat.createPreferences(

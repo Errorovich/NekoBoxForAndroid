@@ -28,6 +28,8 @@ class TuicSettingsActivity : ProfileSettingsActivity<TuicBean>() {
         DataStore.serverSNI = sni
         DataStore.serverReduceRTT = reduceRTT
         DataStore.serverAllowInsecure = allowInsecure
+        DataStore.serverUDPOverStream = udpOverStream
+        DataStore.serverHeartbeat = heartbeat
     }
 
     override fun TuicBean.serialize() {
@@ -44,6 +46,8 @@ class TuicSettingsActivity : ProfileSettingsActivity<TuicBean>() {
         sni = DataStore.serverSNI
         reduceRTT = DataStore.serverReduceRTT
         allowInsecure = DataStore.serverAllowInsecure
+        udpOverStream = DataStore.serverUDPOverStream
+        heartbeat = DataStore.serverHeartbeat
     }
 
     override fun PreferenceFragmentCompat.createPreferences(

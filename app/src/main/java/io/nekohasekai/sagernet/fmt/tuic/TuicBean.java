@@ -33,6 +33,12 @@ public class TuicBean extends AbstractBean {
     public Integer protocolVersion;
     public String uuid;
 
+    // Carry UDP in a single stream instead of native datagrams. Boolean.
+    public Boolean udpOverStream;
+    // Keep-alive interval as a duration string ("10s"); empty leaves the core on
+    // its 10s default. The core parses it as a duration, so a unit is required.
+    public String heartbeat;
+
     @Override
     public void initializeDefaultValues() {
         super.initializeDefaultValues();
@@ -50,11 +56,13 @@ public class TuicBean extends AbstractBean {
         if (customJSON == null) customJSON = "";
         if (protocolVersion == null) protocolVersion = 5;
         if (uuid == null) uuid = "";
+        if (udpOverStream == null) udpOverStream = false;
+        if (heartbeat == null) heartbeat = "";
     }
 
     @Override
     public void serialize(ByteBufferOutput output) {
-        output.writeInt(2);
+        output.writeInt(3);
         super.serialize(output);
         output.writeString(token);
         output.writeString(caText);
@@ -70,6 +78,8 @@ public class TuicBean extends AbstractBean {
         output.writeString(customJSON);
         output.writeInt(protocolVersion);
         output.writeString(uuid);
+        output.writeBoolean(udpOverStream);
+        output.writeString(heartbeat);
     }
 
     @Override
@@ -95,6 +105,10 @@ public class TuicBean extends AbstractBean {
             uuid = input.readString();
         } else {
             protocolVersion = 4;
+        }
+        if (version >= 3) {
+            udpOverStream = input.readBoolean();
+            heartbeat = input.readString();
         }
     }
 

@@ -66,4 +66,24 @@
             app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
 
+    <PreferenceCategory app:title="@string/anytls_session_cat">
+        <EditTextPreference
+            app:icon="@drawable/ic_baseline_running_with_errors_24"
+            app:key="idleSessionCheckInterval"
+            app:dialogMessage="@string/duration_hint"
+            app:title="@string/anytls_idle_check_interval"
+            app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
+            app:icon="@drawable/ic_baseline_running_with_errors_24"
+            app:key="idleSessionTimeout"
+            app:dialogMessage="@string/duration_hint"
+            app:title="@string/anytls_idle_timeout"
+            app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
+            app:icon="@drawable/ic_maps_360"
+            app:key="minIdleSession"
+            app:title="@string/anytls_min_idle_session"
+            app:useSimpleSummaryProvider="true" />
+    </PreferenceCategory>
+
 </PreferenceScreen>

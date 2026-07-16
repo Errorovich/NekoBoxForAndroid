@@ -14,6 +14,9 @@ fun buildSingBoxOutboundAnyTLSBean(bean: AnyTLSBean): SingBoxOptions.Outbound_An
         server = bean.serverAddress
         server_port = bean.serverPort
         password = bean.password
+        bean.idleSessionCheckInterval.blankAsNull()?.let { idle_session_check_interval = it }
+        bean.idleSessionTimeout.blankAsNull()?.let { idle_session_timeout = it }
+        if ((bean.minIdleSession ?: 0) > 0) min_idle_session = bean.minIdleSession
 
         tls = SingBoxOptions.OutboundTLSOptions().apply {
             enabled = true

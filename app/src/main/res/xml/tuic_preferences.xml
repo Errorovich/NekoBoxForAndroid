@@ -71,6 +71,17 @@
             app:icon="@drawable/ic_notification_enhanced_encryption"
             app:key="serverAllowInsecure"
             app:title="@string/allow_insecure" />
+        <SwitchPreference
+            app:icon="@drawable/ic_baseline_add_road_24"
+            app:key="serverUDPOverStream"
+            app:summary="@string/tuic_udp_over_stream_sum"
+            app:title="@string/tuic_udp_over_stream" />
+        <EditTextPreference
+            app:icon="@drawable/ic_baseline_running_with_errors_24"
+            app:key="serverHeartbeat"
+            app:dialogMessage="@string/duration_hint"
+            app:title="@string/tuic_heartbeat"
+            app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
 
 </PreferenceScreen>

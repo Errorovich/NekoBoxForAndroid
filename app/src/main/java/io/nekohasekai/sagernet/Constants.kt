@@ -141,6 +141,17 @@ object Key {
     const val SERVER_CONGESTION_CONTROLLER = "serverCongestionController"
     const val SERVER_DISABLE_SNI = "serverDisableSNI"
     const val SERVER_REDUCE_RTT = "serverReduceRTT"
+    const val SERVER_UDP_OVER_STREAM = "serverUDPOverStream"
+    const val SERVER_HEARTBEAT = "serverHeartbeat"
+
+    const val SERVER_IDLE_SESSION_CHECK_INTERVAL = "serverIdleSessionCheckInterval"
+    const val SERVER_IDLE_SESSION_TIMEOUT = "serverIdleSessionTimeout"
+    const val SERVER_MIN_IDLE_SESSION = "serverMinIdleSession"
+
+    const val SERVER_HOST_KEY_ALGORITHMS = "serverHostKeyAlgorithms"
+    const val SERVER_CLIENT_VERSION = "serverClientVersion"
+
+    const val SERVER_PERSISTENT_KEEPALIVE = "serverPersistentKeepalive"
 
     const val SERVER_USER_ID = "serverUserId"
     const val SERVER_PINNED_CERT_CHAIN_SHA256 = "serverPinnedCertChainSha256"

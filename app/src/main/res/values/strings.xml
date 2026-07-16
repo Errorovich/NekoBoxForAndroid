@@ -523,6 +523,25 @@
     <string name="tailscale_exit_node_lan">Allow LAN access</string>
     <string name="tailscale_exit_node_lan_sum">Keep reaching the local network while an exit node is in use.</string>
 
+    <string name="duration_hint">A duration with a unit, e.g. 10s, 500ms, 1m. Empty keeps the core default.</string>
+
+    <string name="tuic_udp_over_stream">UDP over stream</string>
+    <string name="tuic_udp_over_stream_sum">Carry UDP inside a single reliable stream instead of native QUIC datagrams. Must match the server.</string>
+    <string name="tuic_heartbeat">Heartbeat</string>
+
+    <string name="anytls_session_cat">Session pool</string>
+    <string name="anytls_idle_check_interval">Idle session check interval</string>
+    <string name="anytls_idle_timeout">Idle session timeout</string>
+    <string name="anytls_min_idle_session">Minimum idle sessions</string>
+
+    <string name="ssh_host_key_algorithms">Host key algorithms</string>
+    <string name="ssh_host_key_algorithms_sum">Accepted host-key algorithms, one per line. Empty lets the client negotiate its defaults.</string>
+    <string name="ssh_client_version">Client version</string>
+    <string name="ssh_client_version_sum">Override the advertised SSH client banner, e.g. SSH-2.0-OpenSSH_9.0. Empty uses the core default.</string>
+
+    <string name="wireguard_persistent_keepalive">Persistent keepalive</string>
+    <string name="wireguard_persistent_keepalive_sum">Seconds between keepalive packets that hold a NAT mapping open. 0 disables it.</string>
+
     <string name="trusttunnel_quic">HTTP/3</string>
     <string name="trusttunnel_quic_sum">Carry the tunnel over QUIC instead of HTTP/2. Must match the server.</string>
     <string name="trusttunnel_health_check">Health check</string>

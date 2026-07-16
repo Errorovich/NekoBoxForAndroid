@@ -23,6 +23,11 @@ public class SSHBean extends AbstractBean {
     public String privateKeyPassphrase;
     public String publicKey;
 
+    // Accepted host-key algorithms, one per line/comma; empty lets the core
+    // negotiate its defaults. clientVersion overrides the advertised banner.
+    public String hostKeyAlgorithms;
+    public String clientVersion;
+
     @Override
     public void initializeDefaultValues() {
         if (serverPort == null) serverPort = 22;
@@ -35,11 +40,13 @@ public class SSHBean extends AbstractBean {
         if (privateKey == null) privateKey = "";
         if (privateKeyPassphrase == null) privateKeyPassphrase = "";
         if (publicKey == null) publicKey = "";
+        if (hostKeyAlgorithms == null) hostKeyAlgorithms = "";
+        if (clientVersion == null) clientVersion = "";
     }
 
     @Override
     public void serialize(ByteBufferOutput output) {
-        output.writeInt(0);
+        output.writeInt(1);
         super.serialize(output);
         output.writeString(username);
         output.writeInt(authType);
@@ -55,6 +62,8 @@ public class SSHBean extends AbstractBean {
                 break;
         }
         output.writeString(publicKey);
+        output.writeString(hostKeyAlgorithms);
+        output.writeString(clientVersion);
     }
 
     @Override
@@ -75,6 +84,10 @@ public class SSHBean extends AbstractBean {
                 break;
         }
         publicKey = input.readString();
+        if (version >= 1) {
+            hostKeyAlgorithms = input.readString();
+            clientVersion = input.readString();
+        }
     }
 
     @NotNull
