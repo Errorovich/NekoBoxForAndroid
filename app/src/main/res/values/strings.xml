@@ -115,6 +115,13 @@
     <string name="password">Password</string>
     <string name="enc_method">Encrypt Method</string>
     <string name="protocol">Protocol</string>
+    <string name="mieru_advanced_cat">Advanced</string>
+    <string name="mieru_multiplexing">Multiplexing</string>
+    <string name="mieru_multiplexing_default">Default</string>
+    <string name="mieru_server_ports">Additional ports</string>
+    <string name="mieru_server_ports_sum">Extra port ranges beyond the one above, comma-separated, e.g. 2000-2999,8080. They share the transport selected above.</string>
+    <string name="mieru_traffic_pattern">Traffic pattern</string>
+    <string name="mieru_traffic_pattern_sum">Base64-encoded traffic pattern from the mieru client. Leave empty unless the server defines one.</string>
     <string name="protocol_param">Protocol Param</string>
     <string name="obfs">Obfs</string>
     <string name="obfs_param">Obfs Param</string>

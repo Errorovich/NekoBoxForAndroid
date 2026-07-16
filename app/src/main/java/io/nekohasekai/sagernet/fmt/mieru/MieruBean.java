@@ -35,6 +35,15 @@ public class MieruBean extends AbstractBean {
     public String password;
     public Integer mtu;
 
+    // Multiplexing level: "", MULTIPLEXING_OFF/LOW/MIDDLE/HIGH. Empty leaves the
+    // core on its default.
+    public String multiplexing;
+    // Base64 protobuf traffic pattern, opaque here -- passed to the core verbatim.
+    public String trafficPattern;
+    // Extra "start-end"/single port ranges, comma-separated, sharing this
+    // profile's transport. serverPort stays the primary; these add to it.
+    public String serverPorts;
+
     @Override
     public void initializeDefaultValues() {
         super.initializeDefaultValues();
@@ -42,11 +51,14 @@ public class MieruBean extends AbstractBean {
         if (username == null) username = "";
         if (password == null) password = "";
         if (mtu == null) mtu = 1400;
+        if (multiplexing == null) multiplexing = "";
+        if (trafficPattern == null) trafficPattern = "";
+        if (serverPorts == null) serverPorts = "";
     }
 
     @Override
     public void serialize(ByteBufferOutput output) {
-        output.writeInt(0);
+        output.writeInt(1);
         super.serialize(output);
         output.writeString(protocol);
         output.writeString(username);
@@ -54,6 +66,9 @@ public class MieruBean extends AbstractBean {
         if (protocol.equals("UDP")) {
             output.writeInt(mtu);
         }
+        output.writeString(multiplexing);
+        output.writeString(trafficPattern);
+        output.writeString(serverPorts);
     }
 
     @Override
@@ -65,6 +80,11 @@ public class MieruBean extends AbstractBean {
         password = input.readString();
         if (protocol.equals("UDP")) {
             mtu = input.readInt();
+        }
+        if (version >= 1) {
+            multiplexing = input.readString();
+            trafficPattern = input.readString();
+            serverPorts = input.readString();
         }
     }
 

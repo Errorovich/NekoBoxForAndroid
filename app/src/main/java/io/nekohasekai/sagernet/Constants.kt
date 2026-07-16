@@ -111,6 +111,9 @@ object Key {
     const val SERVER_CERTIFICATES = "serverCertificates"
     const val SERVER_MTU = "serverMTU"
 
+    const val SERVER_MULTIPLEXING = "serverMultiplexing"
+    const val SERVER_TRAFFIC_PATTERN = "serverTrafficPattern"
+
     const val SERVER_CONFIG = "serverConfig"
     const val SERVER_CUSTOM = "serverCustom"
     const val SERVER_CUSTOM_OUTBOUND = "serverCustomOutbound"

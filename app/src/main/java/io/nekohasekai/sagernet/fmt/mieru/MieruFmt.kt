@@ -29,14 +29,20 @@ import org.json.JSONObject
 fun parseMieru(server: String): MieruBean {
     val link = server.replace("mierus://", "https://").toHttpUrlOrNull()
         ?: error("invalid mieru simple link $server")
+    val ports = link.queryParameterValues("port").filterNotNull().filter { it.isNotBlank() }
+    require(ports.isNotEmpty()) { "missing mieru port" }
     return MieruBean().apply {
         serverAddress = link.host
-        serverPort = link.queryParameterValues("port").firstOrNull()?.toIntOrNull()
-            ?: error("missing mieru port")
+        // The first port/protocol pair is the primary; the rest ride along in
+        // serverPorts sharing the same transport.
+        serverPort = ports.first().substringBefore("-").toIntOrNull() ?: error("bad mieru port")
+        serverPorts = ports.drop(1).joinToString(",")
         username = link.username
         password = link.password
         protocol = link.queryParameterValues("protocol").firstOrNull()?.uppercase() ?: "TCP"
         mtu = link.queryParameter("mtu")?.toIntOrNull() ?: 1400
+        multiplexing = link.queryParameter("multiplexing").orEmpty()
+        trafficPattern = link.queryParameter("traffic-pattern").orEmpty()
         name = link.fragment ?: link.queryParameter("profile")
     }
 }
@@ -48,8 +54,16 @@ fun MieruBean.toUri(): String {
         .password(password)
         .addQueryParameter("profile", name.ifBlank { "default" })
         .addQueryParameter("mtu", mtu.toString())
-        .addQueryParameter("port", serverPort.toString())
-        .addQueryParameter("protocol", protocol.uppercase())
+    // Emit port/protocol positionally: the primary first, then each extra range,
+    // all sharing this profile's transport (the simple link pairs them by index).
+    builder.addQueryParameter("port", serverPort.toString())
+    builder.addQueryParameter("protocol", protocol.uppercase())
+    serverPorts.split(",").map { it.trim() }.filter { it.isNotBlank() }.forEach {
+        builder.addQueryParameter("port", it)
+        builder.addQueryParameter("protocol", protocol.uppercase())
+    }
+    if (multiplexing.isNotBlank()) builder.addQueryParameter("multiplexing", multiplexing)
+    if (trafficPattern.isNotBlank()) builder.addQueryParameter("traffic-pattern", trafficPattern)
     if (name.isNotBlank()) builder.encodedFragment(name.urlSafe())
     return builder.toLink("mierus", appendDefaultPort = false)
 }

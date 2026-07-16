@@ -43,4 +43,27 @@
             app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
 
+    <PreferenceCategory app:title="@string/mieru_advanced_cat">
+        <moe.matsuri.nb4a.ui.SimpleMenuPreference
+            app:defaultValue=""
+            app:entries="@array/mieru_multiplexing"
+            app:entryValues="@array/mieru_multiplexing_value"
+            app:icon="@drawable/ic_baseline_compare_arrows_24"
+            app:key="serverMultiplexing"
+            app:title="@string/mieru_multiplexing"
+            app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
+            app:icon="@drawable/ic_maps_directions_boat"
+            app:key="serverPorts"
+            app:dialogMessage="@string/mieru_server_ports_sum"
+            app:title="@string/mieru_server_ports"
+            app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
+            app:icon="@drawable/ic_baseline_running_with_errors_24"
+            app:key="serverTrafficPattern"
+            app:dialogMessage="@string/mieru_traffic_pattern_sum"
+            app:title="@string/mieru_traffic_pattern"
+            app:useSimpleSummaryProvider="true" />
+    </PreferenceCategory>
+
 </PreferenceScreen>
