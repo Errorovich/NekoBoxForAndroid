@@ -1,9 +1,49 @@
 package io.nekohasekai.sagernet.fmt.tailscale
 
+import io.nekohasekai.sagernet.ktx.urlSafe
 import moe.matsuri.nb4a.SingBoxOptions
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 
-// Tailscale has no share link: a profile is an authenticated node in someone's
-// tailnet, not a server anyone can hand out.
+// ts:// is the share link the desktop NekoBox (qr243vbi) lineage uses. It is not
+// a normal authority URL -- the host is the literal "tailscale" and everything
+// lives in the query -- so it is built and parsed by hand rather than through
+// HttpUrl's authority machinery. state_directory is deliberately omitted: it is
+// a local path scoped per profile, meaningless to another device.
+
+fun TailscaleBean.toUri(): String {
+    val q = StringBuilder()
+    fun add(key: String, value: String) {
+        if (q.isNotEmpty()) q.append('&')
+        q.append(key).append('=').append(value.urlSafe())
+    }
+    if (authKey.isNotBlank()) add("auth_key", authKey)
+    if (controlURL.isNotBlank()) add("control_url", controlURL)
+    if (hostname.isNotBlank()) add("hostname", hostname)
+    add("ephemeral", if (ephemeral) "true" else "false")
+    add("accept_routes", if (acceptRoutes) "true" else "false")
+    if (exitNode.isNotBlank()) add("exit_node", exitNode)
+    add("exit_node_allow_lan_access", if (exitNodeAllowLANAccess) "true" else "false")
+
+    val fragment = if (name.isNotBlank()) "#" + name.urlSafe() else ""
+    return "ts://tailscale?$q$fragment"
+}
+
+fun parseTailscale(server: String): TailscaleBean {
+    val url = server.replace("ts://", "https://").toHttpUrlOrNull()
+        ?: error("invalid tailscale link $server")
+    require(url.host == "tailscale") { "unexpected tailscale link host ${url.host}" }
+    return TailscaleBean().apply {
+        name = url.fragment.orEmpty()
+        authKey = url.queryParameter("auth_key").orEmpty()
+        controlURL = url.queryParameter("control_url").orEmpty()
+        hostname = url.queryParameter("hostname").orEmpty()
+        ephemeral = url.queryParameter("ephemeral") == "true"
+        // accept_routes defaults on, so a link that omits it should stay on.
+        acceptRoutes = url.queryParameter("accept_routes") != "false"
+        exitNode = url.queryParameter("exit_node").orEmpty()
+        exitNodeAllowLANAccess = url.queryParameter("exit_node_allow_lan_access") == "true"
+    }
+}
 
 /**
  * @param profileId scopes the node state. Two profiles sharing one state

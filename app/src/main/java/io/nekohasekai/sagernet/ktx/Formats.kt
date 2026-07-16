@@ -15,6 +15,9 @@ import io.nekohasekai.sagernet.fmt.socks.parseSOCKS
 import io.nekohasekai.sagernet.fmt.ssh.parseSSH
 import io.nekohasekai.sagernet.fmt.awg.parseAmneziaVpnLink
 import io.nekohasekai.sagernet.fmt.trusttunnel.parseTrustTunnel
+import io.nekohasekai.sagernet.fmt.wireguard.parseWireGuard
+import io.nekohasekai.sagernet.fmt.tailscale.parseTailscale
+import moe.matsuri.nb4a.proxy.shadowtls.parseShadowTLS
 import io.nekohasekai.sagernet.fmt.trojan.parseTrojan
 import io.nekohasekai.sagernet.fmt.tuic.parseTuic
 import io.nekohasekai.sagernet.fmt.juicity.parseJuicity
@@ -247,6 +250,27 @@ suspend fun parseProxies(text: String): List<AbstractBean> {
             Logs.d("Try parse TrustTunnel link: $this")
             runCatching {
                 entities.add(parseTrustTunnel(this))
+            }.onFailure {
+                Logs.w(it)
+            }
+        } else if (startsWith("wg://")) {
+            Logs.d("Try parse WireGuard/AmneziaWG link: $this")
+            runCatching {
+                entities.add(parseWireGuard(this))
+            }.onFailure {
+                Logs.w(it)
+            }
+        } else if (startsWith("shadowtls://")) {
+            Logs.d("Try parse ShadowTLS link: $this")
+            runCatching {
+                entities.add(parseShadowTLS(this))
+            }.onFailure {
+                Logs.w(it)
+            }
+        } else if (startsWith("ts://")) {
+            Logs.d("Try parse Tailscale link: $this")
+            runCatching {
+                entities.add(parseTailscale(this))
             }.onFailure {
                 Logs.w(it)
             }

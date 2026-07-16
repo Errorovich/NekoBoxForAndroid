@@ -18,6 +18,7 @@ import io.nekohasekai.sagernet.fmt.naive.buildNaiveConfig
 import io.nekohasekai.sagernet.fmt.naive.toUri
 import io.nekohasekai.sagernet.fmt.shadowsocks.*
 import moe.matsuri.nb4a.proxy.shadowtls.ShadowTLSBean
+import moe.matsuri.nb4a.proxy.shadowtls.toUri
 import io.nekohasekai.sagernet.fmt.snell.SnellBean
 import io.nekohasekai.sagernet.fmt.snell.toUri
 import io.nekohasekai.sagernet.fmt.socks.SOCKSBean
@@ -30,9 +31,11 @@ import io.nekohasekai.sagernet.fmt.juicity.JuicityBean
 import io.nekohasekai.sagernet.fmt.juicity.toUri
 import io.nekohasekai.sagernet.fmt.v2ray.*
 import io.nekohasekai.sagernet.fmt.wireguard.WireGuardBean
+import io.nekohasekai.sagernet.fmt.wireguard.toUri
 import io.nekohasekai.sagernet.fmt.awg.AWGBean
 import io.nekohasekai.sagernet.fmt.trusttunnel.TrustTunnelBean
 import io.nekohasekai.sagernet.fmt.tailscale.TailscaleBean
+import io.nekohasekai.sagernet.fmt.tailscale.toUri
 import io.nekohasekai.sagernet.ktx.app
 import io.nekohasekai.sagernet.ui.profile.*
 import moe.matsuri.nb4a.SingBoxOptions.BrutalOptions
@@ -256,17 +259,9 @@ data class ProxyEntity(
     fun haveStandardLink(): Boolean {
         return when (requireBean()) {
             is SSHBean -> false
-            is WireGuardBean -> false
-            // Amnezia's vpn:// describes a whole app config, not a single
-            // profile, so it is import-only.
-            is AWGBean -> false
             // tt:// is a real per-profile link, but only parsing it is implemented
             // so far -- nothing here can write one back out yet.
             is TrustTunnelBean -> false
-            // A profile is an authenticated node in someone's tailnet, so there is
-            // nothing to hand out as a link.
-            is TailscaleBean -> false
-            is ShadowTLSBean -> false
             is ConfigBean -> false
             else -> true
         }
@@ -285,6 +280,12 @@ data class ProxyEntity(
             is JuicityBean -> toUri()
             is AnyTLSBean -> toUri()
             is SnellBean -> toUri()
+            is ShadowTLSBean -> toUri()
+            // AWGBean must precede WireGuardBean: AWG is not a subtype, but keep
+            // the intent explicit -- it emits wg:// with enable_amnezia.
+            is AWGBean -> toUri()
+            is WireGuardBean -> toUri()
+            is TailscaleBean -> toUri()
             else -> toUniversalLink()
         }
     }
