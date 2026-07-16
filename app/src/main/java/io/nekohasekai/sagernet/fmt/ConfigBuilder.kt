@@ -590,6 +590,33 @@ fun buildConfig(
         } else {
             // 应用用户规则
             for (rule in extraRules) {
+                // A gateway rule matches everything and just routes it to one
+                // outbound. It carries no match fields, so it would be dropped by
+                // checkEmpty(); emit the action config directly and move on.
+                if (rule.gateway) {
+                    val gwTag = when (val outId = rule.outbound) {
+                        0L -> mainProxyTag
+                        -1L -> TAG_BYPASS
+                        -2L -> TAG_BLOCK
+                        else -> if (outId == proxy.id) mainProxyTag else tagMap[outId] ?: ""
+                    }
+                    if (gwTag.isBlank()) {
+                        Toast.makeText(
+                            SagerNet.application,
+                            "Warning: " + rule.displayName() + ": A non-existent outbound was specified.",
+                            Toast.LENGTH_LONG
+                        ).show()
+                        continue
+                    }
+                    route.rules.add(Rule_DefaultOptions().apply {
+                        _hack_custom_config = if (gwTag == TAG_BLOCK) {
+                            """{"action":"reject"}"""
+                        } else {
+                            """{"action":"route","outbound":"$gwTag"}"""
+                        }
+                    })
+                    continue
+                }
                 if (rule.packages.isNotEmpty()) {
                     PackageCache.awaitLoadSync()
                 }

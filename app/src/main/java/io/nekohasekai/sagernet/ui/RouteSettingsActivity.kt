@@ -75,6 +75,7 @@ class RouteSettingsActivity(
             else -> OutboundPreference.VALUE_SELECT_PROFILE.toInt()
         }
         DataStore.routePackages = packages.joinToString("\n")
+        DataStore.routeGateway = gateway
     }
 
     fun RuleEntity.serialize() {
@@ -95,6 +96,7 @@ class RouteSettingsActivity(
             else -> DataStore.routeOutboundRule
         }
         packages = DataStore.routePackages.split("\n").filter { it.isNotBlank() }.toSet()
+        gateway = DataStore.routeGateway
 
         if (DataStore.editingId == 0L) {
             enabled = true
@@ -149,9 +151,34 @@ class RouteSettingsActivity(
     lateinit var outbound: OutboundPreference
     lateinit var apps: AppListPreference
 
+    // Everything a gateway rule hides: the custom config and every match field.
+    // name, outbound and the gateway switch itself stay visible.
+    private val gatewayHiddenKeys = listOf(
+        Key.SERVER_CONFIG,
+        Key.ROUTE_PACKAGES,
+        Key.ROUTE_DOMAIN,
+        Key.ROUTE_IP,
+        Key.ROUTE_PORT,
+        Key.ROUTE_SOURCE,
+        Key.ROUTE_SOURCE_PORT,
+        Key.ROUTE_RULESET,
+        Key.ROUTE_NETWORK,
+        Key.ROUTE_PROTOCOL,
+    )
+
     fun PreferenceFragmentCompat.viewCreated(view: View, savedInstanceState: Bundle?) {
         outbound = findPreference(Key.ROUTE_OUTBOUND)!!
         apps = findPreference(Key.ROUTE_PACKAGES)!!
+
+        val gateway = findPreference<androidx.preference.SwitchPreference>(Key.ROUTE_GATEWAY)!!
+        fun applyGateway(on: Boolean) {
+            gatewayHiddenKeys.forEach { findPreference<Preference>(it)?.isVisible = !on }
+        }
+        applyGateway(gateway.isChecked)
+        gateway.setOnPreferenceChangeListener { _, newValue ->
+            applyGateway(newValue as Boolean)
+            true
+        }
 
         outbound.setOnPreferenceChangeListener { _, newValue ->
             if (newValue.toString() == OutboundPreference.VALUE_SELECT_PROFILE) {

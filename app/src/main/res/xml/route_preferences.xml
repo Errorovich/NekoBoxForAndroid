@@ -6,6 +6,11 @@
         app:key="routeName"
         app:title="@string/route_name"
         app:useSimpleSummaryProvider="true" />
+    <SwitchPreference
+        app:icon="@drawable/ic_hardware_router"
+        app:key="routeGateway"
+        app:summary="@string/route_gateway_sum"
+        app:title="@string/route_gateway" />
     <moe.matsuri.nb4a.ui.EditConfigPreference
         app:icon="@drawable/ic_baseline_layers_24"
         app:key="serverConfig"

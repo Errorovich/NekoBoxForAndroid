@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
 
 @Database(
     entities = [ProxyGroup::class, ProxyEntity::class, RuleEntity::class],
-    version = 12,
+    version = 13,
     autoMigrations = [
         AutoMigration(from = 3, to = 4),
         AutoMigration(from = 4, to = 5),
@@ -31,7 +31,9 @@ import kotlinx.coroutines.launch
         // 10 -> 11 only adds the nullable awgBean and trustTunnelBean columns.
         AutoMigration(from = 10, to = 11),
         // 11 -> 12 only adds the nullable tailscaleBean column.
-        AutoMigration(from = 11, to = 12)
+        AutoMigration(from = 11, to = 12),
+        // 12 -> 13 only adds the rules.gateway column (defaults to 0).
+        AutoMigration(from = 12, to = 13)
     ]
 )
 @TypeConverters(value = [KryoConverters::class, GsonConverters::class])

@@ -167,6 +167,7 @@ object Key {
     const val ROUTE_RULESET = "routeRuleset"
     const val ROUTE_OUTBOUND = "routeOutbound"
     const val ROUTE_PACKAGES = "routePackages"
+    const val ROUTE_GATEWAY = "routeGateway"
 
     const val GROUP_NAME = "groupName"
     const val GROUP_TYPE = "groupType"

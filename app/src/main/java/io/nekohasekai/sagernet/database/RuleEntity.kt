@@ -27,6 +27,12 @@ data class RuleEntity(
     var ruleset: String = "",
     var outbound: Long = 0,
     var packages: Set<String> = emptySet(),
+    // Gateway rules match nothing and route everything to `outbound`; the UI hides
+    // every other field and the builder emits {"action":"route","outbound":...}.
+    // Appended last so an older backup, which lacks these bytes, deserializes it
+    // as false instead of shifting the layout.
+    @ColumnInfo(defaultValue = "0")
+    var gateway: Boolean = false,
 ) : Parcelable {
 
     fun displayName(): String {
@@ -35,6 +41,7 @@ data class RuleEntity(
 
     fun mkSummary(): String {
         var summary = ""
+        if (gateway) summary += "[gateway]\n"
         if (config.isNotBlank()) summary += "[config]\n"
         if (domains.isNotBlank()) summary += "$domains\n"
         if (ip.isNotBlank()) summary += "$ip\n"

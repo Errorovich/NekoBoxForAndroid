@@ -159,6 +159,8 @@
     <string name="route_add">Create Route</string>
     <string name="delete_route_prompt">Are you sure you want to remove this route?</string>
     <string name="route_name">Route Name</string>
+    <string name="route_gateway">Gateway (catch-all)</string>
+    <string name="route_gateway_sum">Route every unmatched connection to the chosen outbound. Hides all match fields and the custom config; the rule becomes an action-route to that outbound.</string>
     <string name="route_proxy">Proxy</string>
     <string name="route_bypass">Bypass</string>
     <string name="route_block">Block</string>
