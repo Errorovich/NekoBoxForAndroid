@@ -28,6 +28,7 @@ import io.nekohasekai.sagernet.fmt.v2ray.VMessBean;
 import io.nekohasekai.sagernet.fmt.wireguard.WireGuardBean;
 import io.nekohasekai.sagernet.fmt.awg.AWGBean;
 import io.nekohasekai.sagernet.fmt.trusttunnel.TrustTunnelBean;
+import io.nekohasekai.sagernet.fmt.tailscale.TailscaleBean;
 import io.nekohasekai.sagernet.ktx.KryosKt;
 import io.nekohasekai.sagernet.ktx.Logs;
 import moe.matsuri.nb4a.proxy.config.ConfigBean;
@@ -137,6 +138,12 @@ public class KryoConverters {
     public static TrustTunnelBean trustTunnelDeserialize(byte[] bytes) {
         if (JavaUtil.isEmpty(bytes)) return null;
         return deserialize(new TrustTunnelBean(), bytes);
+    }
+
+    @TypeConverter
+    public static TailscaleBean tailscaleDeserialize(byte[] bytes) {
+        if (JavaUtil.isEmpty(bytes)) return null;
+        return deserialize(new TailscaleBean(), bytes);
     }
 
     @TypeConverter

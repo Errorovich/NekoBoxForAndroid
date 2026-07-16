@@ -32,6 +32,7 @@ import io.nekohasekai.sagernet.fmt.v2ray.*
 import io.nekohasekai.sagernet.fmt.wireguard.WireGuardBean
 import io.nekohasekai.sagernet.fmt.awg.AWGBean
 import io.nekohasekai.sagernet.fmt.trusttunnel.TrustTunnelBean
+import io.nekohasekai.sagernet.fmt.tailscale.TailscaleBean
 import io.nekohasekai.sagernet.ktx.app
 import io.nekohasekai.sagernet.ui.profile.*
 import moe.matsuri.nb4a.SingBoxOptions.BrutalOptions
@@ -71,6 +72,7 @@ data class ProxyEntity(
     var wgBean: WireGuardBean? = null,
     var awgBean: AWGBean? = null,
     var trustTunnelBean: TrustTunnelBean? = null,
+    var tailscaleBean: TailscaleBean? = null,
     var shadowTLSBean: ShadowTLSBean? = null,
     var anyTLSBean: AnyTLSBean? = null,
     var chainBean: ChainBean? = null,
@@ -89,6 +91,7 @@ data class ProxyEntity(
         const val TYPE_WG = 18
         const val TYPE_AWG = 25
         const val TYPE_TRUSTTUNNEL = 26
+        const val TYPE_TAILSCALE = 27
 
         const val TYPE_NAIVE = 9
         const val TYPE_HYSTERIA = 15
@@ -179,6 +182,7 @@ data class ProxyEntity(
             TYPE_WG -> wgBean = KryoConverters.wireguardDeserialize(byteArray)
             TYPE_AWG -> awgBean = KryoConverters.awgDeserialize(byteArray)
             TYPE_TRUSTTUNNEL -> trustTunnelBean = KryoConverters.trustTunnelDeserialize(byteArray)
+            TYPE_TAILSCALE -> tailscaleBean = KryoConverters.tailscaleDeserialize(byteArray)
             TYPE_TUIC -> tuicBean = KryoConverters.tuicDeserialize(byteArray)
             TYPE_JUICITY -> juicityBean = KryoConverters.juicityDeserialize(byteArray)
             TYPE_SHADOWTLS -> shadowTLSBean = KryoConverters.shadowTLSDeserialize(byteArray)
@@ -202,6 +206,7 @@ data class ProxyEntity(
         TYPE_WG -> "WireGuard"
         TYPE_AWG -> "AmneziaWG"
         TYPE_TRUSTTUNNEL -> "TrustTunnel"
+        TYPE_TAILSCALE -> "Tailscale"
         TYPE_TUIC -> "TUIC"
         TYPE_JUICITY -> "Juicity"
         TYPE_SHADOWTLS -> "ShadowTLS"
@@ -229,6 +234,7 @@ data class ProxyEntity(
             TYPE_WG -> wgBean
             TYPE_AWG -> awgBean
             TYPE_TRUSTTUNNEL -> trustTunnelBean
+            TYPE_TAILSCALE -> tailscaleBean
             TYPE_TUIC -> tuicBean
             TYPE_JUICITY -> juicityBean
             TYPE_SHADOWTLS -> shadowTLSBean
@@ -257,6 +263,9 @@ data class ProxyEntity(
             // tt:// is a real per-profile link, but only parsing it is implemented
             // so far -- nothing here can write one back out yet.
             is TrustTunnelBean -> false
+            // A profile is an authenticated node in someone's tailnet, so there is
+            // nothing to hand out as a link.
+            is TailscaleBean -> false
             is ShadowTLSBean -> false
             is ConfigBean -> false
             else -> true
@@ -376,12 +385,14 @@ data class ProxyEntity(
         wgBean = null
         awgBean = null
         trustTunnelBean = null
+        tailscaleBean = null
         tuicBean = null
         juicityBean = null
         shadowTLSBean = null
         anyTLSBean = null
         chainBean = null
         configBean = null
+        snellBean = null
 
         when (bean) {
             is SOCKSBean -> {
@@ -444,6 +455,11 @@ data class ProxyEntity(
                 trustTunnelBean = bean
             }
 
+            is TailscaleBean -> {
+                type = TYPE_TAILSCALE
+                tailscaleBean = bean
+            }
+
             is TuicBean -> {
                 type = TYPE_TUIC
                 tuicBean = bean
@@ -499,6 +515,7 @@ data class ProxyEntity(
                 TYPE_WG -> WireGuardSettingsActivity::class.java
                 TYPE_AWG -> AWGSettingsActivity::class.java
                 TYPE_TRUSTTUNNEL -> TrustTunnelSettingsActivity::class.java
+                TYPE_TAILSCALE -> TailscaleSettingsActivity::class.java
                 TYPE_TUIC -> TuicSettingsActivity::class.java
                 TYPE_JUICITY -> JuicitySettingsActivity::class.java
                 TYPE_SHADOWTLS -> ShadowTLSSettingsActivity::class.java

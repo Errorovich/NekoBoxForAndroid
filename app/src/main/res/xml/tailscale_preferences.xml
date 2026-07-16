@@ -1,0 +1,54 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <EditTextPreference
+        app:icon="@drawable/ic_social_emoji_symbols"
+        app:key="name"
+        app:title="@string/profile_name"
+        app:useSimpleSummaryProvider="true" />
+
+    <PreferenceCategory app:title="@string/proxy_cat">
+        <EditTextPreference
+            app:dialogLayout="@layout/layout_password_dialog"
+            app:dialogMessage="@string/tailscale_auth_key_sum"
+            app:icon="@drawable/ic_baseline_vpn_key_24"
+            app:key="authKey"
+            app:title="@string/tailscale_auth_key" />
+        <EditTextPreference
+            app:dialogMessage="@string/tailscale_control_url_sum"
+            app:icon="@drawable/ic_hardware_router"
+            app:key="controlURL"
+            app:title="@string/tailscale_control_url"
+            app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
+            app:dialogMessage="@string/tailscale_hostname_sum"
+            app:icon="@drawable/ic_baseline_domain_24"
+            app:key="hostname"
+            app:title="@string/tailscale_hostname"
+            app:useSimpleSummaryProvider="true" />
+        <SwitchPreference
+            app:icon="@drawable/ic_baseline_running_with_errors_24"
+            app:key="ephemeral"
+            app:summary="@string/tailscale_ephemeral_sum"
+            app:title="@string/tailscale_ephemeral" />
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/tailscale_routing_cat">
+        <SwitchPreference
+            app:icon="@drawable/ic_maps_360"
+            app:key="acceptRoutes"
+            app:summary="@string/tailscale_accept_routes_sum"
+            app:title="@string/tailscale_accept_routes" />
+        <EditTextPreference
+            app:dialogMessage="@string/tailscale_exit_node_sum"
+            app:icon="@drawable/baseline_public_24"
+            app:key="exitNode"
+            app:title="@string/tailscale_exit_node"
+            app:useSimpleSummaryProvider="true" />
+        <SwitchPreference
+            app:icon="@drawable/ic_baseline_domain_24"
+            app:key="exitNodeAllowLANAccess"
+            app:summary="@string/tailscale_exit_node_lan_sum"
+            app:title="@string/tailscale_exit_node_lan" />
+    </PreferenceCategory>
+
+</PreferenceScreen>

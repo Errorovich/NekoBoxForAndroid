@@ -79,6 +79,9 @@
                         android:id="@+id/action_new_trusttunnel"
                         android:title="@string/action_trusttunnel" />
                     <item
+                        android:id="@+id/action_new_tailscale"
+                        android:title="@string/action_tailscale" />
+                    <item
                         android:id="@+id/action_new_config"
                         android:title="@string/custom_config" />
                     <item

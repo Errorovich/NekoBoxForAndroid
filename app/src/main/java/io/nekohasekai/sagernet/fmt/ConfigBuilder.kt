@@ -35,6 +35,8 @@ import io.nekohasekai.sagernet.fmt.awg.AWGBean
 import io.nekohasekai.sagernet.fmt.awg.buildSingBoxEndpointAWGBean
 import io.nekohasekai.sagernet.fmt.trusttunnel.TrustTunnelBean
 import io.nekohasekai.sagernet.fmt.trusttunnel.buildSingBoxOutboundTrustTunnelBean
+import io.nekohasekai.sagernet.fmt.tailscale.TailscaleBean
+import io.nekohasekai.sagernet.fmt.tailscale.buildSingBoxEndpointTailscaleBean
 import io.nekohasekai.sagernet.ktx.isIpAddress
 import io.nekohasekai.sagernet.ktx.mkPort
 import io.nekohasekai.sagernet.utils.PackageCache
@@ -414,7 +416,7 @@ fun buildConfig(
                 }
 
                 currentIsEndpoint = bean is WireGuardBean || bean is AWGBean ||
-                    (bean is ConfigBean && bean.type == 2)
+                    bean is TailscaleBean || (bean is ConfigBean && bean.type == 2)
 
                 currentOutbound = when (bean) {
                     is ConfigBean -> CustomSingBoxOption(bean.config) as SingBoxOption
@@ -448,6 +450,9 @@ fun buildConfig(
 
                     is TrustTunnelBean ->
                         buildSingBoxOutboundTrustTunnelBean(bean)
+
+                    is TailscaleBean ->
+                        buildSingBoxEndpointTailscaleBean(bean, proxyEntity.id)
 
                     is SSHBean ->
                         buildSingBoxOutboundSSHBean(bean)

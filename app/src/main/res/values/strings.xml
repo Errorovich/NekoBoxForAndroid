@@ -240,6 +240,7 @@
     <string name="action_wireguard" translatable="false">WireGuard</string>
     <string name="action_awg" translatable="false">AmneziaWG</string>
     <string name="action_trusttunnel" translatable="false">TrustTunnel</string>
+    <string name="action_tailscale" translatable="false">Tailscale</string>
     <string name="action_tuic" translatable="false">TUIC</string>
     <string name="action_juicity" translatable="false">Juicity</string>
     <string name="proxy_chain">Proxy Chain</string>
@@ -498,6 +499,22 @@
     <string name="awg_i3" translatable="false">I3</string>
     <string name="awg_i4" translatable="false">I4</string>
     <string name="awg_i5" translatable="false">I5</string>
+
+    <string name="tailscale_auth_key">Auth key</string>
+    <string name="tailscale_auth_key_sum">Pre-authentication key from the admin console. Without one, the login URL is only written to the log.</string>
+    <string name="tailscale_control_url">Control URL</string>
+    <string name="tailscale_control_url_sum">Coordination server, including the scheme, e.g. https://headscale.example.com. Empty uses Tailscale\'s own.</string>
+    <string name="tailscale_hostname">Hostname</string>
+    <string name="tailscale_hostname_sum">Name this node takes in the tailnet.</string>
+    <string name="tailscale_ephemeral">Ephemeral node</string>
+    <string name="tailscale_ephemeral_sum">Remove this node from the tailnet once it disconnects.</string>
+    <string name="tailscale_routing_cat">Routing</string>
+    <string name="tailscale_accept_routes">Accept routes</string>
+    <string name="tailscale_accept_routes_sum">Use the subnets other nodes advertise.</string>
+    <string name="tailscale_exit_node">Exit node</string>
+    <string name="tailscale_exit_node_sum">Node name or IP to send all other traffic through. Empty reaches the tailnet only.</string>
+    <string name="tailscale_exit_node_lan">Allow LAN access</string>
+    <string name="tailscale_exit_node_lan_sum">Keep reaching the local network while an exit node is in use.</string>
 
     <string name="trusttunnel_quic">HTTP/3</string>
     <string name="trusttunnel_quic_sum">Carry the tunnel over QUIC instead of HTTP/2. Must match the server.</string>

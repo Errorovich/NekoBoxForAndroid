@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
 
 @Database(
     entities = [ProxyGroup::class, ProxyEntity::class, RuleEntity::class],
-    version = 11,
+    version = 12,
     autoMigrations = [
         AutoMigration(from = 3, to = 4),
         AutoMigration(from = 4, to = 5),
@@ -29,7 +29,9 @@ import kotlinx.coroutines.launch
         AutoMigration(from = 8, to = 9, spec = SagerDatabase.Migration8to9::class),
         AutoMigration(from = 9, to = 10, spec = SagerDatabase.Migration9to10::class),
         // 10 -> 11 only adds the nullable awgBean and trustTunnelBean columns.
-        AutoMigration(from = 10, to = 11)
+        AutoMigration(from = 10, to = 11),
+        // 11 -> 12 only adds the nullable tailscaleBean column.
+        AutoMigration(from = 11, to = 12)
     ]
 )
 @TypeConverters(value = [KryoConverters::class, GsonConverters::class])
