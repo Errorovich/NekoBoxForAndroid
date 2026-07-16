@@ -34,7 +34,6 @@ import (
 	"github.com/sagernet/sing-box/protocol/socks"
 	"github.com/sagernet/sing-box/protocol/ssh"
 	"github.com/sagernet/sing-box/protocol/tailscale"
-	"github.com/sagernet/sing-box/protocol/tor"
 	"github.com/sagernet/sing-box/protocol/trojan"
 	"github.com/sagernet/sing-box/protocol/trusttunnel"
 	"github.com/sagernet/sing-box/protocol/tuic"
@@ -80,7 +79,9 @@ func nekoboxAndroidOutboundRegistry() *outbound.Registry {
 	shadowsocks.RegisterOutbound(registry)
 	vmess.RegisterOutbound(registry)
 	trojan.RegisterOutbound(registry)
-	tor.RegisterOutbound(registry)
+	// Tor is intentionally not registered: its outbound execs an external tor
+	// binary (cretz/bine), which cannot exist on Android now that plugin support
+	// is gone. Registering it only advertises a protocol that can never connect.
 	ssh.RegisterOutbound(registry)
 	shadowtls.RegisterOutbound(registry)
 	vless.RegisterOutbound(registry)
