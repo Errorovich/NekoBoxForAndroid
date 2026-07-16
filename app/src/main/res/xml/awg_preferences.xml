@@ -54,9 +54,10 @@
     <PreferenceCategory app:title="@string/awg_junk_cat">
         <EditTextPreference
             app:defaultValue="0"
+            app:dialogMessage="@string/awg_jc_sum"
             app:key="jc"
-            app:summary="@string/awg_jc_sum"
-            app:title="@string/awg_jc" />
+            app:title="@string/awg_jc"
+            app:useSimpleSummaryProvider="true" />
         <EditTextPreference
             app:defaultValue="0"
             app:key="jmin"
@@ -91,18 +92,22 @@
 
     <PreferenceCategory app:title="@string/awg_header_cat">
         <EditTextPreference
+            app:dialogMessage="@string/awg_header_sum"
             app:key="h1"
-            app:summary="@string/awg_header_sum"
-            app:title="@string/awg_h1" />
+            app:title="@string/awg_h1"
+            app:useSimpleSummaryProvider="true" />
         <EditTextPreference
+            app:dialogMessage="@string/awg_header_sum"
             app:key="h2"
             app:title="@string/awg_h2"
             app:useSimpleSummaryProvider="true" />
         <EditTextPreference
+            app:dialogMessage="@string/awg_header_sum"
             app:key="h3"
             app:title="@string/awg_h3"
             app:useSimpleSummaryProvider="true" />
         <EditTextPreference
+            app:dialogMessage="@string/awg_header_sum"
             app:key="h4"
             app:title="@string/awg_h4"
             app:useSimpleSummaryProvider="true" />
@@ -110,22 +115,27 @@
 
     <PreferenceCategory app:title="@string/awg_ipacket_cat">
         <EditTextPreference
+            app:dialogMessage="@string/awg_ipacket_sum"
             app:key="i1"
-            app:summary="@string/awg_ipacket_sum"
-            app:title="@string/awg_i1" />
+            app:title="@string/awg_i1"
+            app:useSimpleSummaryProvider="true" />
         <EditTextPreference
+            app:dialogMessage="@string/awg_ipacket_sum"
             app:key="i2"
             app:title="@string/awg_i2"
             app:useSimpleSummaryProvider="true" />
         <EditTextPreference
+            app:dialogMessage="@string/awg_ipacket_sum"
             app:key="i3"
             app:title="@string/awg_i3"
             app:useSimpleSummaryProvider="true" />
         <EditTextPreference
+            app:dialogMessage="@string/awg_ipacket_sum"
             app:key="i4"
             app:title="@string/awg_i4"
             app:useSimpleSummaryProvider="true" />
         <EditTextPreference
+            app:dialogMessage="@string/awg_ipacket_sum"
             app:key="i5"
             app:title="@string/awg_i5"
             app:useSimpleSummaryProvider="true" />
