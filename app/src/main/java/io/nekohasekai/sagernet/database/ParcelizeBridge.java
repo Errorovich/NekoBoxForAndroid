@@ -10,4 +10,8 @@ public class ParcelizeBridge {
     public static RuleEntity createRule(Parcel parcel) {
         return (RuleEntity) RuleEntity.CREATOR.createFromParcel(parcel);
     }
+
+    public static RuleEntityV1 createRuleV1(Parcel parcel) {
+        return (RuleEntityV1) RuleEntityV1.CREATOR.createFromParcel(parcel);
+    }
 }

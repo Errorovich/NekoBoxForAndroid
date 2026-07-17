@@ -537,7 +537,9 @@ class BackupFragment : NamedFragment(R.layout.layout_backup) {
         setting: Boolean
     ): ByteArray {
         val out = JSONObject().apply {
-            put("version", 1)
+            // v2 adds the route rule's ruleset + gateway fields. Export always
+            // uses the highest version; a version < 2 import drops those fields.
+            put("version", 2)
             if (profile) {
                 put("profiles", JSONArray().apply {
                     SagerDatabase.proxyDao.getAll().forEach {
@@ -692,6 +694,11 @@ class BackupFragment : NamedFragment(R.layout.layout_backup) {
     fun finishImport(
         content: JSONObject, profile: Boolean, rule: Boolean, setting: Boolean
     ) {
+        // Route rules gained ruleset + gateway at format version 2. Anything older
+        // (including upstream MatsuriDayo exports) predates those fields and must
+        // be read back with the version-1 layout, or the positional Parcel would
+        // misalign and crash.
+        val version = content.optInt("version", 1)
         if (profile && content.has("profiles")) {
             val profiles = mutableListOf<ProxyEntity>()
             val jsonProfiles = content.getJSONArray("profiles")
@@ -727,7 +734,11 @@ class BackupFragment : NamedFragment(R.layout.layout_backup) {
                 val parcel = Parcel.obtain()
                 parcel.unmarshall(data, 0, data.size)
                 parcel.setDataPosition(0)
-                rules.add(ParcelizeBridge.createRule(parcel))
+                if (version >= 2) {
+                    rules.add(ParcelizeBridge.createRule(parcel))
+                } else {
+                    rules.add(ParcelizeBridge.createRuleV1(parcel).toRuleEntity())
+                }
                 parcel.recycle()
             }
             SagerDatabase.rulesDao.reset()
