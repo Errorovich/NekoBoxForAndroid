@@ -402,8 +402,9 @@
 <string name="share_qr_nfc">QR-код</string>
 <string name="share_subscription">Поделиться подпиской</string>
 <string name="show_bottom_bar">Показать нижнюю панель, как в SagerNet</string>
-<string name="show_direct_speed">Показать прямую скорость</string>
-<string name="show_direct_speed_sum">Также в уведомлении показывать скорость трафика без прокси</string>
+<string name="traffic_in_notification">Трафик в уведомлении</string>
+<string name="traffic_volume">Объём</string>
+<string name="traffic_volume_speed">Объём + скорость</string>
 <string name="show_group_in_notification">Показывать название группы в уведомлении</string>
 <string name="show_system_apps">Показать системные приложения</string>
 <string name="side_sheet_accessibility_pane_title">Боковая панель</string>

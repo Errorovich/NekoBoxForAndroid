@@ -56,9 +56,16 @@ class ServiceNotification(
     var listenPostSpeed = true
 
     suspend fun postNotificationSpeedUpdate(stats: SpeedDisplayData) {
+        service as Context
+        val volume = service.getString(
+            R.string.traffic,
+            Formatter.formatFileSize(service, stats.txTotal),
+            Formatter.formatFileSize(service, stats.rxTotal)
+        )
         useBuilder {
-            if (showDirectSpeed) {
-                val speedDetail = (service as Context).getString(
+            if (trafficInNotification >= 2) {
+                // volume + speed: show both proxy and direct speed
+                val speedDetail = service.getString(
                     R.string.speed_detail, service.getString(
                         R.string.speed, Formatter.formatFileSize(service, stats.txRateProxy)
                     ), service.getString(
@@ -73,23 +80,13 @@ class ServiceNotification(
                 )
                 it.setStyle(NotificationCompat.BigTextStyle().bigText(speedDetail))
                 it.setContentText(speedDetail)
+                it.setSubText(volume)
             } else {
-                val speedSimple = (service as Context).getString(
-                    R.string.traffic, service.getString(
-                        R.string.speed, Formatter.formatFileSize(service, stats.txRateProxy)
-                    ), service.getString(
-                        R.string.speed, Formatter.formatFileSize(service, stats.rxRateProxy)
-                    )
-                )
-                it.setContentText(speedSimple)
+                // volume only
+                it.setStyle(null)
+                it.setContentText(volume)
+                it.setSubText(null)
             }
-            it.setSubText(
-                service.getString(
-                    R.string.traffic,
-                    Formatter.formatFileSize(service, stats.txTotal),
-                    Formatter.formatFileSize(service, stats.rxTotal)
-                )
-            )
         }
         update()
     }
@@ -110,7 +107,7 @@ class ServiceNotification(
         update()
     }
 
-    private val showDirectSpeed = DataStore.showDirectSpeed
+    private val trafficInNotification = DataStore.trafficInNotification
 
     private val builder = NotificationCompat.Builder(service as Context, channel)
         .setWhen(0)

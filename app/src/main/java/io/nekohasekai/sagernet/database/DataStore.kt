@@ -180,7 +180,8 @@ object DataStore : OnPreferenceDataStoreChangeListener {
     var proxyApps by configurationStore.boolean(Key.PROXY_APPS)
     var bypass by configurationStore.boolean(Key.BYPASS_MODE) { true }
     var individual by configurationStore.string(Key.INDIVIDUAL)
-    var showDirectSpeed by configurationStore.boolean(Key.SHOW_DIRECT_SPEED) { true }
+    // 0 = off, 1 = volume only, 2 = volume + speed (direct and proxy)
+    var trafficInNotification by configurationStore.stringToInt(Key.TRAFFIC_IN_NOTIFICATION) { 2 }
 
     val persistAcrossReboot by configurationStore.boolean(Key.PERSIST_ACROSS_REBOOT) { false }
 

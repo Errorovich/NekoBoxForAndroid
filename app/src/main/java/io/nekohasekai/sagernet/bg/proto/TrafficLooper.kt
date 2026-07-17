@@ -81,10 +81,12 @@ class TrafficLooper
     }
 
     private suspend fun loop() {
-        val delayMs = DataStore.speedInterval.toLong()
-        val showDirectSpeed = DataStore.showDirectSpeed
+        val trafficInNotification = DataStore.trafficInNotification
+        // The bottom bar always needs a steady tick; fall back to 1s when no valid
+        // notification interval is configured so speed keeps counting there.
+        val delayMs = DataStore.speedInterval.toLong().let { if (it <= 0L) 1000L else it }
+        val showDirectSpeed = trafficInNotification >= 2
         val profileTrafficStatistics = DataStore.profileTrafficStatistics
-        if (delayMs == 0L) return
 
         var trafficUpdater: TrafficUpdater? = null
         var proxy: ProxyInstance?
@@ -177,8 +179,10 @@ class TrafficLooper
             }
 
             // ServiceNotification
-            data.notification?.apply {
-                if (listenPostSpeed) postNotificationSpeedUpdate(speed)
+            if (trafficInNotification != 0) {
+                data.notification?.apply {
+                    if (listenPostSpeed) postNotificationSpeedUpdate(speed)
+                }
             }
 
             delay(delayMs)

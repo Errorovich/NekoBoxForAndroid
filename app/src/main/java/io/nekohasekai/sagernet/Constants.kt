@@ -45,7 +45,7 @@ object Key {
     const val MIXED_USERNAME = "neko" // username presented to the authed mixed inbound
     const val ALLOW_ACCESS = "allowAccess"
     const val SPEED_INTERVAL = "speedInterval"
-    const val SHOW_DIRECT_SPEED = "showDirectSpeed"
+    const val TRAFFIC_IN_NOTIFICATION = "trafficInNotification"
 
     const val APPEND_HTTP_PROXY = "appendHttpProxy"
     const val HTTP_PROXY_BYPASS = "httpProxyBypass"

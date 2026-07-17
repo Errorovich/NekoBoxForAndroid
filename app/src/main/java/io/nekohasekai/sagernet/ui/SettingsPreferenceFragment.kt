@@ -79,7 +79,6 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
         val dnsHosts = findPreference<EditTextPreference>(Key.DNS_HOSTS)!!
         val strictRoute = findPreference<SwitchPreference>(Key.STRICT_ROUTE)!!
 
-        val showDirectSpeed = findPreference<SwitchPreference>(Key.SHOW_DIRECT_SPEED)!!
         val ipv6Mode = findPreference<Preference>(Key.IPV6_MODE)!!
         val trafficSniffing = findPreference<Preference>(Key.TRAFFIC_SNIFFING)!!
 
@@ -142,12 +141,13 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
             newValue
         }
 
-        val profileTrafficStatistics =
-            findPreference<SwitchPreference>(Key.PROFILE_TRAFFIC_STATISTICS)!!
         val speedInterval = findPreference<SimpleMenuPreference>(Key.SPEED_INTERVAL)!!
-        profileTrafficStatistics.isEnabled = speedInterval.value.toString() != "0"
-        speedInterval.setOnPreferenceChangeListener { _, newValue ->
-            profileTrafficStatistics.isEnabled = newValue.toString() != "0"
+        val trafficInNotification =
+            findPreference<SimpleMenuPreference>(Key.TRAFFIC_IN_NOTIFICATION)!!
+        speedInterval.isVisible = trafficInNotification.value.toString() != "0"
+        speedInterval.onPreferenceChangeListener = reloadListener
+        trafficInNotification.setOnPreferenceChangeListener { _, newValue ->
+            speedInterval.isVisible = newValue.toString() != "0"
             needReload()
             true
         }
@@ -201,7 +201,6 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
         httpProxyBypass.onPreferenceChangeListener = reloadListener
         dnsHosts.onPreferenceChangeListener = reloadListener
         strictRoute.onPreferenceChangeListener = reloadListener
-        showDirectSpeed.onPreferenceChangeListener = reloadListener
         trafficSniffing.onPreferenceChangeListener = reloadListener
         bypassLan.onPreferenceChangeListener = reloadListener
         bypassLanInCore.onPreferenceChangeListener = reloadListener

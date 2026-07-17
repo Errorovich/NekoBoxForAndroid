@@ -73,9 +73,9 @@
     <string name="cag_misc">Misc Settings</string>
     <string name="show_stop">Show Stop Button</string>
     <string name="show_stop_sum">If you don\'t want to use Quick Tile as the switch</string>
-    <string name="show_direct_speed">Show Direct Speed</string>
-    <string name="show_direct_speed_sum">Show the traffic speed without proxy in the notification as
-        well</string>
+    <string name="traffic_in_notification">Traffic in Notification</string>
+    <string name="traffic_volume">Volume</string>
+    <string name="traffic_volume_speed">Volume + Speed</string>
     <string name="security_settings">TLS Security Settings</string>
     <string name="allow_insecure">Allow Insecure</string>
     <string name="allow_insecure_sum">Disable certificate checking. When enabled, this configuration
