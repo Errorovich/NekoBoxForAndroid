@@ -472,6 +472,30 @@ fun buildConfig(
                     else -> throw IllegalStateException("can't reach")
                 }
 
+                // WireGuard/AmneziaWG's bind (core: transport/awg/bind.go) always
+                // opens both an IPv4 and an IPv6 listening socket through its dialer
+                // and fails hard unless the IPv6 error is EAFNOSUPPORT. When such an
+                // endpoint is chained *through* another gvisor-netstack endpoint
+                // (a WG/AWG detour), that idle IPv6 socket is opened on the carrier's
+                // netstack; if the carrier has no IPv6 address it answers "no route to
+                // host" and the whole chain fails ("create ipv6 connection: connect
+                // udp [::]:0: no route to host"). Give the carrier a throwaway ULA so
+                // the socket can bind. It never carries data -- the encapsulated
+                // WireGuard packets go to the carried peer's server address, whose
+                // family is chosen by destination -- so this is inert for real traffic.
+                if (currentIsEndpoint && (bean is WireGuardBean || bean is AWGBean)) {
+                    val carried = pastEntity?.requireBean()
+                    if (carried is WireGuardBean || carried is AWGBean) {
+                        @Suppress("UNCHECKED_CAST")
+                        val addrs = (currentOutbound._hack_config_map["address"]
+                            as? List<String>)?.toMutableList()
+                        if (addrs != null && addrs.none { it.contains(":") }) {
+                            addrs.add("fdfe:dcba:9876::1/128")
+                            currentOutbound._hack_config_map["address"] = addrs
+                        }
+                    }
+                }
+
                 // internal mux
                 if (!muxApplied) {
                     val muxObj = proxyEntity.singMux()
