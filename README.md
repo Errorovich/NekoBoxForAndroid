@@ -28,7 +28,7 @@ source version. Please do not download it.**
 * Trojan
 * VLESS
 * AnyTLS/AnyReality
-* Snell 1/2/3/4/5
+* Snell 1/2/3/4/5/6
 * ShadowTLS
 * TUIC
 * Juicity

@@ -4726,6 +4726,8 @@ public class SingBoxOptions {
         // Snell specific options
         public String psk;
 
+        public String userkey;
+
         public Integer version;
 
         public String network;
@@ -4733,6 +4735,8 @@ public class SingBoxOptions {
         public String obfs_mode;
 
         public String obfs_host;
+
+        public String mode;
 
         public Boolean reuse;
 
