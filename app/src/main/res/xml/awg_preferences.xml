@@ -60,31 +60,37 @@
             app:useSimpleSummaryProvider="true" />
         <EditTextPreference
             app:defaultValue="0"
+            app:dialogMessage="@string/awg_jmin_sum"
             app:key="jmin"
             app:title="@string/awg_jmin"
             app:useSimpleSummaryProvider="true" />
         <EditTextPreference
             app:defaultValue="0"
+            app:dialogMessage="@string/awg_jmax_sum"
             app:key="jmax"
             app:title="@string/awg_jmax"
             app:useSimpleSummaryProvider="true" />
         <EditTextPreference
             app:defaultValue="0"
+            app:dialogMessage="@string/awg_s1_sum"
             app:key="s1"
             app:title="@string/awg_s1"
             app:useSimpleSummaryProvider="true" />
         <EditTextPreference
             app:defaultValue="0"
+            app:dialogMessage="@string/awg_s2_sum"
             app:key="s2"
             app:title="@string/awg_s2"
             app:useSimpleSummaryProvider="true" />
         <EditTextPreference
             app:defaultValue="0"
+            app:dialogMessage="@string/awg_s3_sum"
             app:key="s3"
             app:title="@string/awg_s3"
             app:useSimpleSummaryProvider="true" />
         <EditTextPreference
             app:defaultValue="0"
+            app:dialogMessage="@string/awg_s4_sum"
             app:key="s4"
             app:title="@string/awg_s4"
             app:useSimpleSummaryProvider="true" />

@@ -190,7 +190,11 @@ object DataStore : OnPreferenceDataStoreChangeListener {
     var dnsHosts by configurationStore.string(Key.DNS_HOSTS) { "" }
     var strictRoute by configurationStore.boolean(Key.STRICT_ROUTE) { true }
     var connectionTestURL by configurationStore.string(Key.CONNECTION_TEST_URL) { CONNECTION_TEST_URL }
-    var connectionTestConcurrent by configurationStore.int("connectionTestConcurrent") { 5 }
+    // Default 1: profiles that reuse the same WireGuard/AmneziaWG server share a
+    // peer key, and WireGuard keeps a single session per key, so testing them at
+    // once makes concurrent handshakes reset each other. Adjustable in settings;
+    // stringToInt because the menu preference stores its value as a string.
+    var connectionTestConcurrent by configurationStore.stringToInt("connectionTestConcurrent") { 1 }
     var connectionTestTimeout by configurationStore.int(Key.CONNECTION_TEST_TIMEOUT) { 3000 }
     var alwaysShowAddress by configurationStore.boolean(Key.ALWAYS_SHOW_ADDRESS)
 

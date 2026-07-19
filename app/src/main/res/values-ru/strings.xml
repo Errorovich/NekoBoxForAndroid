@@ -629,4 +629,69 @@
     <string name="snell_obfs_host">Хост Obfs</string>
     <string name="snell_reuse">Повторное использование</string>
     <string name="snell_reuse_summary">Только v4/v5</string>
+
+    <string name="connection_test_concurrent">Параллельные тесты соединения</string>
+    <string name="duration_hint">Длительность с единицей, напр. 10s, 500ms, 1m. Пусто — значение ядра по умолчанию.</string>
+
+    <string name="route_gateway">Шлюз (catch-all)</string>
+    <string name="route_gateway_sum">Направлять все несовпавшие соединения в выбранный outbound. Скрывает поля совпадения и пользовательский конфиг; правило становится action-route на этот outbound.</string>
+
+    <string name="anytls_session_cat">Пул сессий</string>
+    <string name="anytls_idle_check_interval">Интервал проверки простаивающих сессий</string>
+    <string name="anytls_idle_timeout">Таймаут простаивающей сессии</string>
+    <string name="anytls_min_idle_session">Минимум простаивающих сессий</string>
+
+    <string name="tuic_udp_over_stream">UDP поверх потока</string>
+    <string name="tuic_udp_over_stream_sum">Передавать UDP внутри одного надёжного потока вместо нативных QUIC-датаграмм. Должно совпадать с сервером.</string>
+    <string name="tuic_heartbeat">Heartbeat</string>
+
+    <string name="ssh_host_key_algorithms">Алгоритмы ключа хоста</string>
+    <string name="ssh_host_key_algorithms_sum">Допустимые алгоритмы ключа хоста, по одному в строке. Пусто — клиент согласует свои по умолчанию.</string>
+    <string name="ssh_client_version">Версия клиента</string>
+    <string name="ssh_client_version_sum">Переопределить объявляемый баннер SSH-клиента, напр. SSH-2.0-OpenSSH_9.0. Пусто — значение ядра по умолчанию.</string>
+
+    <string name="wireguard_persistent_keepalive">Постоянный keepalive</string>
+    <string name="wireguard_persistent_keepalive_sum">Секунды между keepalive-пакетами, удерживающими NAT-сопоставление. 0 отключает.</string>
+
+    <string name="awg_persistent_keepalive">Постоянный keepalive</string>
+    <string name="awg_junk_cat">Мусорные пакеты</string>
+    <string name="awg_jc_sum">Количество мусорных пакетов перед рукопожатием. 0 отключает; иначе задайте Jmin и Jmax, причём Jmin не больше Jmax.</string>
+    <string name="awg_jmin_sum">Минимальный размер мусорного пакета в байтах. Используется при заданном Jc и не должен превышать Jmax.</string>
+    <string name="awg_jmax_sum">Максимальный размер мусорного пакета в байтах. Используется при заданном Jc и не меньше Jmin.</string>
+    <string name="awg_s1_sum">Мусорные байты перед пакетом инициации рукопожатия.</string>
+    <string name="awg_s2_sum">Мусорные байты перед пакетом ответа рукопожатия.</string>
+    <string name="awg_s3_sum">Мусорные байты перед пакетом cookie-reply.</string>
+    <string name="awg_s4_sum">Мусорные байты, добавляемые к каждому транспортному (data) пакету.</string>
+    <string name="awg_header_cat">Магические заголовки</string>
+    <string name="awg_header_sum">Число или диапазон «начало-конец». Пусто — стандартный тип сообщения WireGuard. Четыре заголовка не должны пересекаться.</string>
+    <string name="awg_ipacket_cat">Специальные пакеты</string>
+    <string name="awg_ipacket_sum">Шаблоны пакетов AmneziaWG 1.5. Оставьте пустым, если сервер их не задаёт.</string>
+
+    <string name="mieru_advanced_cat">Расширенные</string>
+    <string name="mieru_multiplexing">Мультиплексирование</string>
+    <string name="mieru_multiplexing_default">По умолчанию</string>
+    <string name="mieru_server_ports">Дополнительные порты</string>
+    <string name="mieru_server_ports_sum">Дополнительные диапазоны портов кроме указанного выше, через запятую, напр. 2000-2999,8080. Используют выбранный выше транспорт.</string>
+    <string name="mieru_traffic_pattern">Шаблон трафика</string>
+    <string name="mieru_traffic_pattern_sum">Base64-шаблон трафика из клиента mieru. Оставьте пустым, если сервер его не задаёт.</string>
+
+    <string name="tailscale_hostname">Имя хоста</string>
+    <string name="tailscale_hostname_sum">Имя этого узла в tailnet.</string>
+    <string name="tailscale_auth_key">Ключ авторизации</string>
+    <string name="tailscale_auth_key_sum">Ключ предварительной авторизации из админ-консоли. Без него URL входа только записывается в лог.</string>
+    <string name="tailscale_control_url">URL координатора</string>
+    <string name="tailscale_control_url_sum">Сервер координации, включая схему, напр. https://headscale.example.com. Пусто — собственный сервер Tailscale.</string>
+    <string name="tailscale_ephemeral">Временный узел</string>
+    <string name="tailscale_ephemeral_sum">Удалять этот узел из tailnet после отключения.</string>
+    <string name="tailscale_routing_cat">Маршрутизация</string>
+    <string name="tailscale_accept_routes">Принимать маршруты</string>
+    <string name="tailscale_accept_routes_sum">Использовать подсети, объявляемые другими узлами.</string>
+    <string name="tailscale_exit_node">Выходной узел</string>
+    <string name="tailscale_exit_node_sum">Имя или IP узла, через который направляется весь остальной трафик. Пусто — доступ только к tailnet.</string>
+    <string name="tailscale_exit_node_lan">Разрешить доступ к локальной сети</string>
+    <string name="tailscale_exit_node_lan_sum">Сохранять доступ к локальной сети при использовании выходного узла.</string>
+
+    <string name="trusttunnel_health_check">Проверка работоспособности</string>
+    <string name="trusttunnel_quic">HTTP/3</string>
+    <string name="trusttunnel_quic_sum">Передавать туннель поверх QUIC вместо HTTP/2. Должно совпадать с сервером.</string>
 </resources>
