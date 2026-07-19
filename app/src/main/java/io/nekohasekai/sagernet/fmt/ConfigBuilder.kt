@@ -337,6 +337,33 @@ fun buildConfig(
 
             val defaultServerDomainStrategy = SingBoxOptionsUtil.domainStrategy("server")
 
+            // Nested WireGuard/AmneziaWG MTU. An inner tunnel's largest encrypted
+            // transport packet is (its MTU + 32 + its s4): 32 is amneziawg-go's
+            // MessageTransportSize (16-byte header + 16-byte Poly1305 tag) and s4 is
+            // AmneziaWG's per-transport-packet junk (0 for plain WireGuard). That
+            // packet travels as one datagram over the carrier hop, so it must fit the
+            // carrier's MTU or it fragments on the carrier's gvisor netstack and large
+            // packets get dropped -- handshakes (tiny) pass, bulk data stalls. Walk the
+            // chain from the entry (touches the network, keeps its MTU) inward and cap
+            // each WG/AWG hop carried by another WG/AWG hop. detour wires outbound[i]
+            // through outbound[i+1], so profileList[i+1] carries profileList[i].
+            fun wgMtu(b: AbstractBean): Int? = when (b) {
+                is AWGBean -> b.mtu
+                is WireGuardBean -> b.mtu
+                else -> null
+            }
+            val nestedMtu = HashMap<Long, Int>()
+            for (i in profileList.lastIndex - 1 downTo 0) {
+                val innerBean = profileList[i].requireBean()
+                val innerMtu = wgMtu(innerBean) ?: continue
+                val carrier = profileList[i + 1]
+                val carrierMtu = wgMtu(carrier.requireBean()) ?: continue
+                val effectiveCarrierMtu = nestedMtu[carrier.id] ?: carrierMtu
+                val s4 = (innerBean as? AWGBean)?.s4 ?: 0
+                val cap = effectiveCarrierMtu - 32 - s4
+                if (innerMtu > cap) nestedMtu[profileList[i].id] = cap
+            }
+
             profileList.forEachIndexed { index, proxyEntity ->
                 val bean = proxyEntity.requireBean()
                 var currentIsEndpoint = false
@@ -484,6 +511,12 @@ fun buildConfig(
                 // WireGuard packets go to the carried peer's server address, whose
                 // family is chosen by destination -- so this is inert for real traffic.
                 if (currentIsEndpoint && (bean is WireGuardBean || bean is AWGBean)) {
+                    // Shrink this hop's MTU when it is nested inside a WG/AWG carrier
+                    // (see nestedMtu above), so its encrypted packets fit the carrier.
+                    nestedMtu[proxyEntity.id]?.let {
+                        currentOutbound._hack_config_map["mtu"] = it
+                    }
+
                     val carried = pastEntity?.requireBean()
                     if (carried is WireGuardBean || carried is AWGBean) {
                         @Suppress("UNCHECKED_CAST")
