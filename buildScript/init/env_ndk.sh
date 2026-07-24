@@ -10,7 +10,11 @@ if [ -z "$ANDROID_HOME" ]; then
   fi
 fi
 
-_NDK="$ANDROID_HOME/ndk/25.0.8775105"
+# Needs an NDK new enough to link the prebuilt cronet-go static lib (its recent
+# builds use AArch64 relocation 315, which r25's ld.lld rejects). r28.2 links it;
+# ANDROID_NDK_LATEST_HOME covers CI, where it points at the newest installed NDK.
+_NDK="$ANDROID_HOME/ndk/28.2.13676358"
+[ -f "$_NDK/source.properties" ] || _NDK="$ANDROID_NDK_LATEST_HOME"
 [ -f "$_NDK/source.properties" ] || _NDK="$ANDROID_NDK_HOME"
 [ -f "$_NDK/source.properties" ] || _NDK="$NDK"
 [ -f "$_NDK/source.properties" ] || _NDK="$ANDROID_HOME/ndk-bundle"
